@@ -1,0 +1,19 @@
+{
+  "machineName": "H5P.IVOpenEndedQuestion",
+  "title": "IV Open Ended Question",
+  "license": "MIT",
+  "author": "Joubel",
+  "majorVersion": 1,
+  "minorVersion": 0,
+  "patchVersion": 0,
+  "runnable": 1,
+  "coreApi": {
+    "majorVersion": 1,
+    "minorVersion": 13
+  },
+  "preloadedJs": [
+    {
+      "path": "index.js"
+    }
+  ]
+}

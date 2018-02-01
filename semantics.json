@@ -1,0 +1,50 @@
+[
+  {
+    "label": "Placeholder text",
+    "name": "placeholder",
+    "type": "text",
+    "importance": "high",
+    "default": "Enter your response here",
+    "description": "Text that initially will be shown in the input field. Will be removed automatically when the user starts writing."
+  },
+  {
+    "label": "Max score",
+    "name": "maxscore",
+    "type": "number",
+    "importance": "high",
+    "description": "Used for grading and not shown to the learner",
+    "default": 1
+  },
+  {
+    "label": "Required",
+    "name": "isrequired",
+    "type": "boolean",
+    "importance": "high",
+    "description": "Learners must provide an answer in order to proceed"
+  },
+  {
+    "label": "Localize IV Open Ended Question buttons",
+    "name": "i10n",
+    "type": "group",
+    "common": true,
+    "collapsed": true,
+    "importance": "low",
+    "fields": [
+      {
+        "label": "Skip button label",
+        "name": "skipbuttonlabel",
+        "type": "text",
+        "default": "Skip Question",
+        "importance": "low"
+      },
+      {
+        "label": "Proceed button label",
+        "name": "proceedbuttonlabel",
+        "type": "text",
+        "default": "Answer and proceed",
+        "importance": "low"
+      }
+    ]
+  }
+
+]
