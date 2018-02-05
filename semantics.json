@@ -1,5 +1,11 @@
 [
   {
+    "label": "Question or description",
+    "name": "question",
+    "type": "text",
+    "importance": "high"
+  },
+  {
     "label": "Placeholder text",
     "name": "placeholder",
     "type": "text",
@@ -9,7 +15,7 @@
   },
   {
     "label": "Max score",
-    "name": "maxscore",
+    "name": "maxScore",
     "type": "number",
     "importance": "high",
     "description": "Used for grading and not shown to the learner",
@@ -17,10 +23,36 @@
   },
   {
     "label": "Required",
-    "name": "isrequired",
+    "name": "isRequired",
     "type": "boolean",
     "importance": "high",
     "description": "Learners must provide an answer in order to proceed"
+  },
+  {
+    "name": "inputRows",
+    "label": "Input rows",
+    "type": "select",
+    "importance": "high",
+    "description": "Determines the height of the input field.",
+    "options": [
+      {
+        "value": "1",
+        "label": "1 line"
+      },
+      {
+        "value": "2",
+        "label": "2 lines"
+      },
+      {
+        "value": "3",
+        "label": "3 lines"
+      },
+      {
+        "value": "10",
+        "label": "10 lines"
+      }
+    ],
+    "default": "1"
   },
   {
     "label": "Localize IV Open Ended Question buttons",
@@ -31,20 +63,35 @@
     "importance": "low",
     "fields": [
       {
+        "label": "Required text label",
+        "name": "requiredText",
+        "type": "text",
+        "description": "Text shown to notify learner that input is required before proceeding",
+        "default": "required",
+        "importance": "low"
+      },
+      {
+        "label": "Required message",
+        "name": "requiredMessage",
+        "type": "text",
+        "importance": "low",
+        "default": "This question requires an answer",
+        "description": "Will display if this field is unanswered and required by a wrapper content type"
+      },
+      {
         "label": "Skip button label",
-        "name": "skipbuttonlabel",
+        "name": "skipButtonLabel",
         "type": "text",
         "default": "Skip Question",
         "importance": "low"
       },
       {
         "label": "Proceed button label",
-        "name": "proceedbuttonlabel",
+        "name": "submitButtonLabel",
         "type": "text",
         "default": "Answer and proceed",
         "importance": "low"
       }
     ]
   }
-
 ]

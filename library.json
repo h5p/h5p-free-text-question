@@ -13,7 +13,19 @@
   },
   "preloadedJs": [
     {
-      "path": "index.js"
+      "path": "iv-open-ended-question.js"
+    }
+  ],
+  "preloadedCss": [
+    {
+      "path": "iv-open-ended-question.css"
+    }
+  ],
+  "preloadedDependencies": [
+    {
+      "machineName": "FontAwesome",
+      "majorVersion": 4,
+      "minorVersion": 5
     }
   ]
 }
