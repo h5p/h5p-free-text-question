@@ -136,6 +136,7 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $) {
           addQuestionToXAPI(xAPIEvent, self.params.question);
           addResponseToXAPI(xAPIEvent, self.input.value);
           self.trigger(xAPIEvent);
+          self.trigger('continue');
         }
       });
 

@@ -29,32 +29,6 @@
     "description": "Learners must provide an answer in order to proceed"
   },
   {
-    "name": "inputRows",
-    "label": "Input rows",
-    "type": "select",
-    "importance": "high",
-    "description": "Determines the height of the input field.",
-    "options": [
-      {
-        "value": "1",
-        "label": "1 line"
-      },
-      {
-        "value": "2",
-        "label": "2 lines"
-      },
-      {
-        "value": "3",
-        "label": "3 lines"
-      },
-      {
-        "value": "10",
-        "label": "10 lines"
-      }
-    ],
-    "default": "1"
-  },
-  {
     "label": "Localize IV Open Ended Question buttons",
     "name": "i10n",
     "type": "group",
