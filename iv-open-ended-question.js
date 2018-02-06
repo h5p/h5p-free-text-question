@@ -20,7 +20,7 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $) {
       wrapper.classList.add('h5p-iv-open-ended-question');
 
       var questionWrapper = document.createElement('div');
-      questionWrapper.classList.add('h5p-iv-open-ended-question-wrapper');
+      questionWrapper.classList.add('h5p-iv-open-ended-question-question-wrapper');
 
       var textWrapper = createTextWrapper();
       var inputWrapper = createInputWrapper();
@@ -29,9 +29,9 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $) {
 
       questionWrapper.append(textWrapper);
       questionWrapper.append(inputWrapper);
-      questionWrapper.append(requiredMessageWrapper);
 
       wrapper.append(questionWrapper);
+      wrapper.append(requiredMessageWrapper);
       wrapper.append(createFooter());
       return wrapper;
     };
@@ -215,6 +215,7 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $) {
      * @returns {null} null
      */
     self.attach = function ($container) {
+      $container.get(0).classList.add('h5p-iv-open-ended-question-wrapper');
       var question = createOpenEndedQuestion();
       $container.append(question);
     };

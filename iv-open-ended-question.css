@@ -1,3 +1,7 @@
+.h5p-iv-open-ended-question-wrapper {
+  height: 100%;
+}
+
 .h5p-iv-open-ended-question {
   font-family: "Open Sans", Calibri, Candara, Arial, sans-serif;
   position: relative;
@@ -6,6 +10,14 @@
   flex-direction: column;
   height: 100%;
   width: 100%;
+}
+
+.h5p-iv-open-ended-question-question-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  overflow: auto;
 }
 
 .h5p-iv-open-ended-question-text-wrapper {
@@ -36,12 +48,15 @@
   padding: 1em;
   word-wrap: break-word;
   font-size: 0.9em;
+  flex: 1;
+  display: flex;
 }
 
 .h5p-iv-open-ended-question-input {
   padding: 0.5em;
   width: calc(100% - 1em);
-  max-width: 500px;
+  max-width: 83%;
+  flex: 1;
   box-sizing: border-box;
   font-family: inherit;
   font-size: inherit;
