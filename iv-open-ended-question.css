@@ -55,7 +55,7 @@
 .h5p-iv-open-ended-question-input {
   padding: 0.5em;
   width: calc(100% - 1em);
-  max-width: 83%;
+  max-width: 100%;
   flex: 1;
   box-sizing: border-box;
   font-family: inherit;

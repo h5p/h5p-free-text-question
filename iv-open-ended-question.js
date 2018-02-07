@@ -1,15 +1,46 @@
 var H5P = H5P || {};
+H5P.CKEDITOR = CKEDITOR;
 
-H5P.IVOpenEndedQuestion = (function (EventDispatcher, $) {
+H5P.IVOpenEndedQuestion = (function (EventDispatcher, $, CKEDITOR) {
 
   function IVOpenEndedQuestion(params, id) {
     var self = this;
     self.id = id;
+    self.textAreaID = 'h5p-text-area-' + Math.random(0,999999); // TODO how to get subcontent id?
+    self.ck;
 
     self.params = $.extend({}, {
       question: 'Question or description',
       placeholder: 'Enter your response here'
     }, params);
+
+    self.config = {};
+
+    CKEDITOR.editorConfig = function( config ) {
+      config.toolbarGroups = [
+        { name: 'document', groups: [ 'mode', 'document', 'doctools' ] },
+        { name: 'clipboard', groups: [ 'clipboard', 'undo' ] },
+        { name: 'editing', groups: [ 'find', 'selection', 'spellchecker', 'editing' ] },
+        { name: 'forms', groups: [ 'forms' ] },
+        { name: 'styles', groups: [ 'styles' ] },
+        { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
+        { name: 'links', groups: [ 'links' ] },
+        { name: 'colors', groups: [ 'colors' ] },
+        { name: 'tools', groups: [ 'tools' ] },
+        { name: 'others', groups: [ 'others' ] },
+        { name: 'about', groups: [ 'about' ] },
+        { name: 'paragraph', groups: [ 'list', 'indent', 'blocks', 'align', 'bidi', 'paragraph' ] },
+        { name: 'insert', groups: [ 'insert' ] }
+      ];
+
+      config.removeButtons = 'Source,Save,Templates,Preview,NewPage,Print,Cut,Copy,Paste,PasteText,PasteFromWord,Undo,Replace,Find,Redo,SelectAll,Scayt,Form,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Subscript,Superscript,RemoveFormat,CopyFormatting,NumberedList,BulletedList,Indent,Outdent,Blockquote,CreateDiv,ShowBlocks,Maximize,About,Image,JustifyLeft,BidiLtr,JustifyCenter,BidiRtl,Flash,Anchor,JustifyRight,HorizontalRule,Smiley,SpecialChar,PageBreak,Iframe,JustifyBlock,Language,Font,FontSize,Checkbox';
+
+      config.startupFocus = true;
+      config.width = '100%';
+      config.resize_enabled = false;
+    };
+
+    CKEDITOR.editorConfig(self.config);
 
     /**
      * Create the open ended question element
@@ -48,7 +79,7 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $) {
       text.classList.add('h5p-iv-open-ended-question-text');
       text.innerHTML = self.params.question;
 
-      if (self.params.isRequired === true) {
+      if (self.params.isRequired == true) {
         var requiredText = document.createElement('div');
         requiredText.classList.add('h5p-iv-open-ended-required-text');
         requiredText.innerHTML = '*' + self.params.i10n.requiredText;
@@ -70,18 +101,26 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $) {
 
       var input = document.createElement('textarea');
       input.classList.add('h5p-iv-open-ended-question-input');
+      input.id = self.textAreaID;
       input.rows = self.params.inputRows;
       input.style.resize = 'none';
       input.placeholder = self.params.placeholder;
 
-      input.addEventListener('blur', function () {
-        var xAPIEvent = self.createXAPIEventTemplate('interacted');
-        addQuestionToXAPI(xAPIEvent, self.params.question);
-        addResponseToXAPI(xAPIEvent, input.value);
-        self.trigger(xAPIEvent);
+      input.addEventListener('focus', function() {
+        self.ck = CKEDITOR.replace(self.textAreaID, self.config);
+
+        CKEDITOR.on('instanceLoaded', function() {
+          // TODO resize
+        });
+
+        self.ck.on('blur', function() {
+          var xAPIEvent = self.createXAPIEventTemplate('interacted');
+          addQuestionToXAPI(xAPIEvent, self.params.question);
+          addResponseToXAPI(xAPIEvent, input.value);
+          self.trigger(xAPIEvent);
+        });
       });
 
-      self.input = input; // TODO place one level higher
       inputWrapper.append(input);
 
       return inputWrapper;
@@ -128,19 +167,20 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $) {
       submitButton.innerHTML = self.params.i10n.submitButtonLabel;
 
       submitButton.addEventListener('click', function () {
-        if (self.input.value.trim() === '') {
+
+        if (CKEDITOR.instances[self.textAreaID].getData().trim() === '' && self.params.isRequired) {
           self.showRequiredMessage();
         }
         else {
           var xAPIEvent = self.createXAPIEventTemplate('answered');
           addQuestionToXAPI(xAPIEvent, self.params.question);
-          addResponseToXAPI(xAPIEvent, self.input.value);
+          addResponseToXAPI(xAPIEvent, CKEDITOR.instances[self.textAreaID].getData());
           self.trigger(xAPIEvent);
           self.trigger('continue');
         }
       });
 
-      if (self.params.isRequired === false) {
+      if (self.params.isRequired == false) {
         var skipButton = document.createElement('button');
         skipButton.classList.add('h5p-iv-open-ended-question-button-skip');
         skipButton.type = 'button';
@@ -149,8 +189,9 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $) {
         skipButton.addEventListener('click', function () {
           var xAPIEvent = self.createXAPIEventTemplate('interacted');
           addQuestionToXAPI(xAPIEvent, self.params.question);
-          addResponseToXAPI(xAPIEvent, self.input.value);
+          addResponseToXAPI(xAPIEvent, CKEDITOR.instances[self.textAreaID].getData());
           self.trigger(xAPIEvent);
+          self.trigger('continue');
         });
 
         footer.append(skipButton);
@@ -231,4 +272,4 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $) {
   };
 
   return IVOpenEndedQuestion;
-})(H5P.EventDispatcher, H5P.jQuery);
+})(H5P.EventDispatcher, H5P.jQuery, H5P.CKEDITOR);

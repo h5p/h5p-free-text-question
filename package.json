@@ -1,0 +1,23 @@
+{
+  "name": "h5p-iv-open-ended-question",
+  "version": "1.0.0",
+  "description": "",
+  "main": "ckeditor.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/h5p/iv-open-ended-question.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/h5p/iv-open-ended-question/issues"
+  },
+  "homepage": "https://github.com/h5p/iv-open-ended-question#readme",
+  "dependencies": {
+    "ckeditor": "^4.8.0"
+  }
+}
