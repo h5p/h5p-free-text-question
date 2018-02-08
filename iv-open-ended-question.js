@@ -50,18 +50,13 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $, CKEDITOR) {
       var wrapper = document.createElement('div');
       wrapper.classList.add('h5p-iv-open-ended-question');
 
-      var questionWrapper = document.createElement('div');
-      questionWrapper.classList.add('h5p-iv-open-ended-question-question-wrapper');
-
       var textWrapper = createTextWrapper();
       var inputWrapper = createInputWrapper();
       var requiredMessageWrapper = createRequiredMessageWrapper();
       self.requiredMessageWrapper = requiredMessageWrapper;
 
-      questionWrapper.append(textWrapper);
-      questionWrapper.append(inputWrapper);
-
-      wrapper.append(questionWrapper);
+      wrapper.append(textWrapper);
+      wrapper.append(inputWrapper);
       wrapper.append(requiredMessageWrapper);
       wrapper.append(createFooter());
       return wrapper;
@@ -110,7 +105,24 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $, CKEDITOR) {
         self.ck = CKEDITOR.replace(self.textAreaID, self.config);
 
         CKEDITOR.on('instanceLoaded', function() {
-          // TODO resize
+          var containerHeight = $(inputWrapper).height();
+          var toolBarHeight = $(inputWrapper).find('.cke_top').outerHeight();
+          var editorFooterHeight = $(inputWrapper).find('.cke_bottom').outerHeight();
+          var offset = toolBarHeight + editorFooterHeight + 3;
+          var padding = parseInt($(inputWrapper).css('padding').replace(/[^-\d\.]/g, ''));
+
+          var realHeight = containerHeight - offset;
+          var minHeight = 80;
+
+          if (realHeight > minHeight) {
+            $(inputWrapper).find('.cke_contents').css('height', realHeight);
+          }
+          else {
+            $(inputWrapper).find('.cke_contents').css('height', minHeight);
+            var header = $(self.container).find('.h5p-iv-open-ended-question-text-wrapper').outerHeight();
+            var footer = $(self.container).find('.h5p-iv-open-ended-question-footer').outerHeight();
+            $(self.container).find('.h5p-iv-open-ended-question').css('min-height', minHeight + offset + padding + padding + header + footer);
+          }
         });
 
         self.ck.on('blur', function() {
@@ -257,6 +269,7 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $, CKEDITOR) {
      * @returns {null} null
      */
     self.attach = function ($container) {
+      self.container = $container;
       $container.get(0).classList.add('h5p-iv-open-ended-question-wrapper');
       var question = createOpenEndedQuestion();
       $container.append(question);
