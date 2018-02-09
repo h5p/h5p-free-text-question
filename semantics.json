@@ -1,6 +1,6 @@
 [
   {
-    "label": "Question or description",
+    "label": "Question",
     "name": "question",
     "type": "text",
     "importance": "high"

@@ -14,6 +14,7 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $, CKEDITOR) {
       placeholder: 'Enter your response here'
     }, params);
 
+    // CKEDITOR configuration
     self.config = {};
 
     CKEDITOR.editorConfig = function( config ) {
@@ -24,16 +25,16 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $, CKEDITOR) {
         { name: 'forms', groups: [ 'forms' ] },
         { name: 'styles', groups: [ 'styles' ] },
         { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
-        { name: 'links', groups: [ 'links' ] },
+        { name: 'paragraph', groups: [ 'list', 'indent', 'blocks', 'align', 'bidi', 'paragraph' ] },
         { name: 'colors', groups: [ 'colors' ] },
+        { name: 'links', groups: [ 'links' ] },
         { name: 'tools', groups: [ 'tools' ] },
         { name: 'others', groups: [ 'others' ] },
         { name: 'about', groups: [ 'about' ] },
-        { name: 'paragraph', groups: [ 'list', 'indent', 'blocks', 'align', 'bidi', 'paragraph' ] },
         { name: 'insert', groups: [ 'insert' ] }
       ];
 
-      config.removeButtons = 'Source,Save,Templates,Preview,NewPage,Print,Cut,Copy,Paste,PasteText,PasteFromWord,Undo,Replace,Find,Redo,SelectAll,Scayt,Form,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Subscript,Superscript,RemoveFormat,CopyFormatting,NumberedList,BulletedList,Indent,Outdent,Blockquote,CreateDiv,ShowBlocks,Maximize,About,Image,JustifyLeft,BidiLtr,JustifyCenter,BidiRtl,Flash,Anchor,JustifyRight,HorizontalRule,Smiley,SpecialChar,PageBreak,Iframe,JustifyBlock,Language,Font,FontSize,Checkbox';
+      config.removeButtons = 'Source,Save,NewPage,Preview,Print,Templates,Cut,Copy,Paste,PasteText,PasteFromWord,Redo,Undo,Find,Replace,Scayt,SelectAll,Form,Checkbox,Radio,Select,Textarea,TextField,Button,ImageButton,HiddenField,Subscript,Superscript,CopyFormatting,RemoveFormat,NumberedList,BulletedList,Indent,Blockquote,Outdent,CreateDiv,BidiLtr,BidiRtl,JustifyLeft,JustifyBlock,JustifyRight,JustifyCenter,Language,Anchor,Image,Flash,HorizontalRule,PageBreak,Iframe,SpecialChar,Styles,ShowBlocks,Maximize,About,Font,Smiley';
 
       config.startupFocus = true;
       config.width = '100%';
@@ -41,6 +42,22 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $, CKEDITOR) {
     };
 
     CKEDITOR.editorConfig(self.config);
+
+    CKEDITOR.on('dialogDefinition', function(e) {
+      var dialogDefinition = e.data.definition;
+
+      dialogDefinition.onShow = function () {
+        var dialogBodyElement = this.getElement().find('.cke_dialog_body').$[0];
+        $(dialogBodyElement).css('height', 250);
+        $(dialogBodyElement).css('overflow-y', 'scroll');
+
+        var dialogTabs = this.getElement().find('.cke_dialog_tabs').$[0];
+        $(dialogTabs).css('display', 'none');
+
+        var dialogContents = this.getElement().find('.cke_dialog_contents').$[0];
+        $(dialogContents).css('margin-top', 0);
+      };
+    });
 
     /**
      * Create the open ended question element
@@ -103,8 +120,8 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $, CKEDITOR) {
 
       input.addEventListener('focus', function() {
         self.ck = CKEDITOR.replace(self.textAreaID, self.config);
-
         CKEDITOR.on('instanceLoaded', function() {
+
           var containerHeight = $(inputWrapper).height();
           var toolBarHeight = $(inputWrapper).find('.cke_top').outerHeight();
           var editorFooterHeight = $(inputWrapper).find('.cke_bottom').outerHeight();
@@ -210,6 +227,8 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $, CKEDITOR) {
       }
 
       footer.append(submitButton);
+      self.footer = footer;
+      self.submitButton = submitButton;
 
       return footer;
     };
@@ -260,6 +279,27 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $, CKEDITOR) {
 
       return definition;
     };
+
+    /**
+     * Listen to resize events in order to use smaller buttons
+     */
+    self.on('resize', function() {
+      if (!self.submitButton) {
+        return; // We haven't attached ourselves yet...
+      }
+
+      var footerWidth = $(self.container).width();
+      var fontSize = parseInt($(self.container).css('font-size'), 10);
+      var widthToEmRatio = footerWidth / fontSize;
+      var widthToEmThreshold = 23;
+
+      if (widthToEmRatio <= widthToEmThreshold) {
+        self.submitButton.innerHTML = '';
+      }
+      else {
+        self.submitButton.innerHTML = self.params.i10n.submitButtonLabel;
+      }
+    });
 
     /**
      * Attach function called by H5P framework to insert H5P content into
