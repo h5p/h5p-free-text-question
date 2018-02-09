@@ -15,8 +15,6 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $, CKEDITOR) {
     }, params);
 
     // CKEDITOR configuration
-    self.config = {};
-
     CKEDITOR.editorConfig = function( config ) {
       config.toolbarGroups = [
         { name: 'document', groups: [ 'mode', 'document', 'doctools' ] },
@@ -40,15 +38,17 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $, CKEDITOR) {
       config.width = '100%';
       config.resize_enabled = false;
     };
-
+    
+    self.config = {};
     CKEDITOR.editorConfig(self.config);
 
+    // Ensure dialog doesn't overflow out of iframe
     CKEDITOR.on('dialogDefinition', function(e) {
       var dialogDefinition = e.data.definition;
 
       dialogDefinition.onShow = function () {
         var dialogBodyElement = this.getElement().find('.cke_dialog_body').$[0];
-        $(dialogBodyElement).css('height', 250);
+        $(dialogBodyElement).css('height', 250); // Hardcoded height
         $(dialogBodyElement).css('overflow-y', 'scroll');
 
         var dialogTabs = this.getElement().find('.cke_dialog_tabs').$[0];
@@ -118,10 +118,11 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $, CKEDITOR) {
       input.style.resize = 'none';
       input.placeholder = self.params.placeholder;
 
+      // Initialize the CKEditor on focus and ensure it fits
       input.addEventListener('focus', function() {
         self.ck = CKEDITOR.replace(self.textAreaID, self.config);
-        CKEDITOR.on('instanceLoaded', function() {
 
+        CKEDITOR.on('instanceLoaded', function() {
           var containerHeight = $(inputWrapper).height();
           var toolBarHeight = $(inputWrapper).find('.cke_top').outerHeight();
           var editorFooterHeight = $(inputWrapper).find('.cke_bottom').outerHeight();
