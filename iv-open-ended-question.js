@@ -3,20 +3,18 @@ H5P.CKEDITOR = CKEDITOR;
 
 H5P.IVOpenEndedQuestion = (function (EventDispatcher, $, CKEDITOR) {
 
-  function IVOpenEndedQuestion(params, id) {
+  function IVOpenEndedQuestion(params, id, contentData) {
     var self = this;
-    self.id = id;
-    self.textAreaID = 'h5p-text-area-' + Math.random(0,999999); // TODO how to get subcontent id?
-    self.ck;
+    var textAreaID = 'h5p-text-area-' + contentData.subContentId; 
+    var ck;
 
-    self.params = $.extend({}, {
+    params = $.extend({
       question: 'Question or description',
       placeholder: 'Enter your response here'
     }, params);
 
-    // CKEDITOR configuration
-    CKEDITOR.editorConfig = function( config ) {
-      config.toolbarGroups = [
+    var CKEditorConfig = {
+      toolbarGroups : [
         { name: 'document', groups: [ 'mode', 'document', 'doctools' ] },
         { name: 'clipboard', groups: [ 'clipboard', 'undo' ] },
         { name: 'editing', groups: [ 'find', 'selection', 'spellchecker', 'editing' ] },
@@ -25,37 +23,51 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $, CKEDITOR) {
         { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
         { name: 'paragraph', groups: [ 'list', 'indent', 'blocks', 'align', 'bidi', 'paragraph' ] },
         { name: 'colors', groups: [ 'colors' ] },
-        { name: 'links', groups: [ 'links' ] },
+        { name: 'links'},
         { name: 'tools', groups: [ 'tools' ] },
         { name: 'others', groups: [ 'others' ] },
         { name: 'about', groups: [ 'about' ] },
         { name: 'insert', groups: [ 'insert' ] }
-      ];
-
-      config.removeButtons = 'Source,Save,NewPage,Preview,Print,Templates,Cut,Copy,Paste,PasteText,PasteFromWord,Redo,Undo,Find,Replace,Scayt,SelectAll,Form,Checkbox,Radio,Select,Textarea,TextField,Button,ImageButton,HiddenField,Subscript,Superscript,CopyFormatting,RemoveFormat,NumberedList,BulletedList,Indent,Blockquote,Outdent,CreateDiv,BidiLtr,BidiRtl,JustifyLeft,JustifyBlock,JustifyRight,JustifyCenter,Language,Anchor,Image,Flash,HorizontalRule,PageBreak,Iframe,SpecialChar,Styles,ShowBlocks,Maximize,About,Font,Smiley';
-
-      config.startupFocus = true;
-      config.width = '100%';
-      config.resize_enabled = false;
+      ],
+      removeButtons : 'Source,Save,NewPage,Preview,Print,Templates,Cut,Copy,Paste,PasteText,PasteFromWord,Redo,Undo,Find,Replace,Scayt,SelectAll,Form,Checkbox,Radio,Select,Textarea,TextField,Button,ImageButton,HiddenField,Subscript,Superscript,CopyFormatting,RemoveFormat,NumberedList,BulletedList,Indent,Blockquote,Outdent,CreateDiv,BidiLtr,BidiRtl,JustifyLeft,JustifyBlock,JustifyRight,JustifyCenter,Language,Anchor,Image,Flash,HorizontalRule,PageBreak,Iframe,SpecialChar,Styles,ShowBlocks,Maximize,About,Font,Smiley',
+      startupFocus : true,
+      width : '100%',
+      resize_enabled : false,
+      linkShowAdvancedTab : false,
+      linkShowTargetTab :  false
     };
-    
-    self.config = {};
-    CKEDITOR.editorConfig(self.config);
 
     // Ensure dialog doesn't overflow out of iframe
     CKEDITOR.on('dialogDefinition', function(e) {
       var dialogDefinition = e.data.definition;
+      var dialogName = e.data.name;
 
+      // Configure dialogs to hide unecessary elements
+      if (dialogName == 'link') {
+        var infoTab = dialogDefinition.getContents('info');
+        infoTab.remove('linkType');
+        infoTab.remove('anchorOptions');
+        infoTab.remove('emailOptions');
+      }
+
+      if (dialogName == 'table') {
+        dialogDefinition.removeContents('advanced');
+      }
+
+      // Prevent overflowing out of H5P iframe
       dialogDefinition.onShow = function () {
         var dialogBodyElement = this.getElement().find('.cke_dialog_body').$[0];
-        $(dialogBodyElement).css('height', 250); // Hardcoded height
-        $(dialogBodyElement).css('overflow-y', 'scroll');
-
-        var dialogTabs = this.getElement().find('.cke_dialog_tabs').$[0];
-        $(dialogTabs).css('display', 'none');
+        $(dialogBodyElement).css({
+          'max-height': 250,  // Hardcoded max height
+          'overflow-y': 'scroll'
+        });
 
         var dialogContents = this.getElement().find('.cke_dialog_contents').$[0];
         $(dialogContents).css('margin-top', 0);
+
+        // Resize link dialog
+        var dialogContentsBody = this.getElement().find('.cke_dialog_contents_body').$[0];
+        $(dialogContentsBody).css('height', 'inherit');
       };
     });
 
@@ -67,15 +79,11 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $, CKEDITOR) {
       var wrapper = document.createElement('div');
       wrapper.classList.add('h5p-iv-open-ended-question');
 
-      var textWrapper = createTextWrapper();
-      var inputWrapper = createInputWrapper();
-      var requiredMessageWrapper = createRequiredMessageWrapper();
-      self.requiredMessageWrapper = requiredMessageWrapper;
-
-      wrapper.append(textWrapper);
-      wrapper.append(inputWrapper);
-      wrapper.append(requiredMessageWrapper);
+      wrapper.append(createTextWrapper());
+      wrapper.append(createInputWrapper());
+      wrapper.append(createRequiredMessageWrapper());
       wrapper.append(createFooter());
+      self.wrapper = wrapper;
       return wrapper;
     };
 
@@ -89,16 +97,17 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $, CKEDITOR) {
 
       var text = document.createElement('div');
       text.classList.add('h5p-iv-open-ended-question-text');
-      text.innerHTML = self.params.question;
+      text.innerHTML = params.question;
 
-      if (self.params.isRequired == true) {
+      if (params.isRequired == true) {
         var requiredText = document.createElement('div');
         requiredText.classList.add('h5p-iv-open-ended-required-text');
-        requiredText.innerHTML = '*' + self.params.i10n.requiredText;
+        requiredText.innerHTML = '*' + params.i10n.requiredText;
         textWrapper.append(requiredText);
       }
 
       textWrapper.append(text);
+      self.textWrapper = textWrapper;
 
       return textWrapper;
     };
@@ -108,52 +117,54 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $, CKEDITOR) {
      * @returns {HTMLElement} Input
      */
     var createInputWrapper = function () {
-      var inputWrapper = document.createElement('div');
-      inputWrapper.classList.add('h5p-iv-open-ended-question-input-wrapper');
+      var $inputWrapper = $('<div/>', {
+        'class': 'h5p-iv-open-ended-question-input-wrapper'
+      });
 
       var input = document.createElement('textarea');
       input.classList.add('h5p-iv-open-ended-question-input');
-      input.id = self.textAreaID;
-      input.rows = self.params.inputRows;
-      input.style.resize = 'none';
-      input.placeholder = self.params.placeholder;
+      input.id = textAreaID;
+      input.rows = params.inputRows;
+      input.placeholder = params.placeholder;
 
       // Initialize the CKEditor on focus and ensure it fits
       input.addEventListener('focus', function() {
-        self.ck = CKEDITOR.replace(self.textAreaID, self.config);
+        ck = CKEDITOR.replace(textAreaID, CKEditorConfig);
 
         CKEDITOR.on('instanceLoaded', function() {
-          var containerHeight = $(inputWrapper).height();
-          var toolBarHeight = $(inputWrapper).find('.cke_top').outerHeight();
-          var editorFooterHeight = $(inputWrapper).find('.cke_bottom').outerHeight();
+          // Resize the CKEDITOR using jquery
+          var containerHeight = $inputWrapper.height();
+          var toolBarHeight = $inputWrapper.find('.cke_top').outerHeight();
+          var editorFooterHeight = $inputWrapper.find('.cke_bottom').outerHeight();
           var offset = toolBarHeight + editorFooterHeight + 3;
-          var padding = parseInt($(inputWrapper).css('padding').replace(/[^-\d\.]/g, ''));
+          var padding = parseInt($inputWrapper.css('padding').replace(/[^-\d\.]/g, ''));
 
           var realHeight = containerHeight - offset;
           var minHeight = 80;
 
           if (realHeight > minHeight) {
-            $(inputWrapper).find('.cke_contents').css('height', realHeight);
+            $inputWrapper.find('.cke_contents').css('height', realHeight);
           }
           else {
-            $(inputWrapper).find('.cke_contents').css('height', minHeight);
-            var header = $(self.container).find('.h5p-iv-open-ended-question-text-wrapper').outerHeight();
-            var footer = $(self.container).find('.h5p-iv-open-ended-question-footer').outerHeight();
-            $(self.container).find('.h5p-iv-open-ended-question').css('min-height', minHeight + offset + padding + padding + header + footer);
+            $inputWrapper.find('.cke_contents').css('height', minHeight);
+            var header = $(self.textWrapper).outerHeight();
+            var footer = $(self.footer).outerHeight();
+            $(self.wrapper).css('min-height', minHeight + offset + padding + padding + header + footer);
           }
         });
 
-        self.ck.on('blur', function() {
+        // Send an 'interacted' event every time the user exits the text area
+        ck.on('blur', function() {
           var xAPIEvent = self.createXAPIEventTemplate('interacted');
-          addQuestionToXAPI(xAPIEvent, self.params.question);
+          addQuestionToXAPI(xAPIEvent, params.question);
           addResponseToXAPI(xAPIEvent, input.value);
           self.trigger(xAPIEvent);
         });
       });
 
-      inputWrapper.append(input);
+      $inputWrapper.append(input);
 
-      return inputWrapper;
+      return $inputWrapper.get(0);
     };
 
     /**
@@ -166,7 +177,7 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $, CKEDITOR) {
 
       var requiredMessage = document.createElement('div');
       requiredMessage.classList.add('h5p-iv-open-ended-question-required-message');
-      requiredMessage.innerHTML = self.params.i10n.requiredMessage;
+      requiredMessage.innerHTML = params.i10n.requiredMessage;
 
       var requiredButton = document.createElement('button');
       requiredButton.classList.add('h5p-iv-open-ended-question-required-exit');
@@ -177,8 +188,10 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $, CKEDITOR) {
       requiredMessageWrapper.append(requiredMessage);
       requiredMessageWrapper.append(requiredButton);
 
+      self.requiredMessageWrapper = requiredMessageWrapper;
+
       // Hide on creation
-      requiredMessageWrapper.style.display = 'none';
+      self.hideRequiredMessage();
 
       return requiredMessageWrapper;
     };
@@ -194,32 +207,46 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $, CKEDITOR) {
       var submitButton = document.createElement('button');
       submitButton.classList.add('h5p-iv-open-ended-question-button-submit');
       submitButton.type = 'button';
-      submitButton.innerHTML = self.params.i10n.submitButtonLabel;
+      submitButton.innerHTML = params.i10n.submitButtonLabel;
 
       submitButton.addEventListener('click', function () {
 
-        if (CKEDITOR.instances[self.textAreaID].getData().trim() === '' && self.params.isRequired) {
+        // Editor doesn't exist until the user clicks on the textarea
+        if (CKEDITOR.instances[textAreaID] === undefined) {
+          if (params.isRequired) {
+            self.showRequiredMessage();
+          }
+          else {
+            var xAPIEvent = self.createXAPIEventTemplate('answered');
+            addQuestionToXAPI(xAPIEvent, params.question);
+            addResponseToXAPI(xAPIEvent, '');
+            self.trigger(xAPIEvent);
+            self.trigger('continue');
+          }
+        }
+
+        // Show the required message if the user hasn't inputted anything
+        else if (CKEDITOR.instances[textAreaID].getData().trim() === '' && params.isRequired) {
           self.showRequiredMessage();
         }
         else {
           var xAPIEvent = self.createXAPIEventTemplate('answered');
-          addQuestionToXAPI(xAPIEvent, self.params.question);
-          addResponseToXAPI(xAPIEvent, CKEDITOR.instances[self.textAreaID].getData());
+          addQuestionToXAPI(xAPIEvent, params.question);
+          addResponseToXAPI(xAPIEvent, CKEDITOR.instances[textAreaID].getData());
           self.trigger(xAPIEvent);
           self.trigger('continue');
         }
       });
 
-      if (self.params.isRequired == false) {
+      if (params.isRequired == false) {
         var skipButton = document.createElement('button');
         skipButton.classList.add('h5p-iv-open-ended-question-button-skip');
         skipButton.type = 'button';
-        skipButton.innerHTML = self.params.i10n.skipButtonLabel;
+        skipButton.innerHTML = params.i10n.skipButtonLabel;
 
         skipButton.addEventListener('click', function () {
           var xAPIEvent = self.createXAPIEventTemplate('interacted');
-          addQuestionToXAPI(xAPIEvent, self.params.question);
-          addResponseToXAPI(xAPIEvent, CKEDITOR.instances[self.textAreaID].getData());
+          addQuestionToXAPI(xAPIEvent, params.question);
           self.trigger(xAPIEvent);
           self.trigger('continue');
         });
@@ -235,11 +262,11 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $, CKEDITOR) {
     };
 
     self.showRequiredMessage = function () {
-      self.requiredMessageWrapper.style.display = '';
+      self.requiredMessageWrapper.classList.remove('h5p-iv-open-ended-question-hidden');
     };
 
     self.hideRequiredMessage = function () {
-      self.requiredMessageWrapper.style.display = 'none';
+      self.requiredMessageWrapper.classList.add('h5p-iv-open-ended-question-hidden');
     };
 
     /**
@@ -277,8 +304,28 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $, CKEDITOR) {
       definition.description = {
         'en-US': question // We don't know the language at runtime
       };
+      definition.extensions = {
+        'https://h5p.org/x-api/h5p-machine-name': 'H5P.IVOpenEndedQuestion'
+      };
 
       return definition;
+    };
+
+    /**
+     * Get xAPI data.
+     * Contract used by report rendering engine.
+     *
+     * @see contract at {@link https://h5p.org/documentation/developers/contracts#guides-header-6}
+     * @returns {Object} xAPI data statement
+     */
+    self.getXAPIData = function () {
+      var XAPIEvent = this.createXAPIEventTemplate('answered');
+      addQuestionToXAPI(XAPIEvent, this.params.question);
+      addResponseToXAPI(XAPIEvent, (CKEDITOR.instances[textAreaID] ? CKEDITOR.instances[textAreaID].getData() : ''));
+
+      return {
+        statement: XAPIEvent.data.statement
+      };
     };
 
     /**
@@ -289,8 +336,8 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $, CKEDITOR) {
         return; // We haven't attached ourselves yet...
       }
 
-      var footerWidth = $(self.container).width();
-      var fontSize = parseInt($(self.container).css('font-size'), 10);
+      var footerWidth = $(self.$container).width();
+      var fontSize = parseInt($(self.$container).css('font-size'), 10);
       var widthToEmRatio = footerWidth / fontSize;
       var widthToEmThreshold = 23;
 
@@ -298,7 +345,7 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $, CKEDITOR) {
         self.submitButton.innerHTML = '';
       }
       else {
-        self.submitButton.innerHTML = self.params.i10n.submitButtonLabel;
+        self.submitButton.innerHTML = params.i10n.submitButtonLabel;
       }
     });
 
@@ -310,7 +357,7 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $, CKEDITOR) {
      * @returns {null} null
      */
     self.attach = function ($container) {
-      self.container = $container;
+      self.$container = $container;
       $container.get(0).classList.add('h5p-iv-open-ended-question-wrapper');
       var question = createOpenEndedQuestion();
       $container.append(question);
@@ -320,10 +367,6 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $, CKEDITOR) {
   // Extends the event dispatcher
   IVOpenEndedQuestion.prototype = Object.create(EventDispatcher.prototype);
   IVOpenEndedQuestion.prototype.constructor = IVOpenEndedQuestion;
-
-  String.prototype.trim = function() {
-    return this.replace(/^\s+|\s+$/g,"");
-  };
 
   return IVOpenEndedQuestion;
 })(H5P.EventDispatcher, H5P.jQuery, H5P.CKEDITOR);

@@ -51,6 +51,7 @@
   font-size: 0.9em;
   flex: 1;
   display: flex;
+  resize: none;
 }
 
 .h5p-iv-open-ended-question-input {
@@ -72,6 +73,10 @@
   padding-bottom: 0.5em;
   color: rgba(255,255,255,0.6);
   font-size: 0.75em;
+}
+
+.h5p-iv-open-ended-question-hidden {
+  display: none;
 }
 
 .h5p-iv-open-ended-question-required-wrapper {
