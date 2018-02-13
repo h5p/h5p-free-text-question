@@ -5,7 +5,7 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $, CKEDITOR) {
 
   function IVOpenEndedQuestion(params, id, contentData) {
     var self = this;
-    var textAreaID = 'h5p-text-area-' + contentData.subContentId; 
+    var textAreaID = 'h5p-text-area-' + contentData.subContentId;
     var ck;
 
     params = $.extend({
@@ -330,12 +330,9 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $, CKEDITOR) {
 
     /**
      * Listen to resize events in order to use smaller buttons
+     * @returns {undefined}
      */
-    self.on('resize', function() {
-      if (!self.submitButton) {
-        return; // We haven't attached ourselves yet...
-      }
-
+    var onResize = function() {
       var footerWidth = $(self.$container).width();
       var fontSize = parseInt($(self.$container).css('font-size'), 10);
       var widthToEmRatio = footerWidth / fontSize;
@@ -347,7 +344,7 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $, CKEDITOR) {
       else {
         self.submitButton.innerHTML = params.i10n.submitButtonLabel;
       }
-    });
+    };
 
     /**
      * Attach function called by H5P framework to insert H5P content into
@@ -361,6 +358,7 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $, CKEDITOR) {
       $container.get(0).classList.add('h5p-iv-open-ended-question-wrapper');
       var question = createOpenEndedQuestion();
       $container.append(question);
+      self.on('resize', onResize);
     };
   }
 
