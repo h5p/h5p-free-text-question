@@ -21,6 +21,7 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $, CKEDITOR) {
     CKEDITOR.on('dialogDefinition', function(e) {
       var dialogDefinition = e.data.definition;
       var dialogName = e.data.name;
+      var dialog = e.data.definition.dialog;
 
       // Configure dialogs to hide unecessary elements
       if (dialogName == 'link') {
@@ -31,7 +32,7 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $, CKEDITOR) {
       }
 
       // Prevent overflowing out of H5P iframe
-      dialogDefinition.onShow = function () {
+      dialog.on('show', function () {
         var dialogBodyElement = this.getElement().find('.cke_dialog_body').$[0];
         $(dialogBodyElement).css({
           'max-height': 250,  // Hardcoded max height
@@ -44,7 +45,7 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $, CKEDITOR) {
         // Resize link dialog
         var dialogContentsBody = this.getElement().find('.cke_dialog_contents_body').$[0];
         $(dialogContentsBody).css('height', 'inherit');
-      };
+      });
     });
 
     /**
