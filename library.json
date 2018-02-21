@@ -13,9 +13,6 @@
   },
   "preloadedJs": [
     {
-      "path": "ckeditor/ckeditor.js"
-    },
-    {
       "path": "iv-open-ended-question.js"
     }
   ],
