@@ -28,19 +28,68 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $) {
     removeButtons: 'Cut,Copy,Paste,Undo,Redo,Anchor,Subscript,Superscript,Font,BulletedList,NumberedList,Outdent,Indent,About'
   };
 
+  // Contains a "global" mapping between editor names and callback functions
+  var ckEditorCallbaks = {};
+
+  // Have we setup our global CK Editor listener?
+  var ckEditorListenerInitialized = false;
+
   /**
    * Loads the CK Editor dynamically
-   * @param  {string}   basePath  The basepath for ckeditor files
-   * @param  {Function} next      Callback function
+   * @param  {string}   basePath   The basepath for ckeditor files
+   * @param  {string}   editorName The editor name
+   * @param  {Function} onLoad     Function invoked when CKEDITOR is loaded
+   * @param  {Function} onReady    Function invoked when a CKEDITOR instance is ready
+   * @param  {Function} onDialogDefinition  Function invoked when a dialog defintion is ready
    * @return {undefined}
    */
-  var loadCKEditor = function (basePath, next) {
+  var loadCKEditor = function (basePath, editorName, onLoad, onReady, onDialogDefinition) {
+
+    ckEditorCallbaks[editorName] = {
+      onReady: onReady,
+      onDialogDefinition: onDialogDefinition
+    };
+
+    var loaded = function () {
+      // Make sure this is only done once.
+      if (!ckEditorListenerInitialized) {
+        ckEditorListenerInitialized = true;
+        // Resize the CKEDITOR on initialization using jquery
+        window.CKEDITOR.on('instanceReady', function(event) {
+          var callbacks = ckEditorCallbaks[event.editor.name];
+          if (callbacks.onReady ) {
+            callbacks.onReady();
+          }
+        });
+
+        // Listen to dialog definitions
+        window.CKEDITOR.on('dialogDefinition', function(event) {
+          var dialogDefinition = event.data.definition;
+
+          // Configure dialogs to hide unecessary elements
+          if (event.data.name == 'link') {
+            var infoTab = dialogDefinition.getContents('info');
+            infoTab.remove('linkType');
+            infoTab.remove('anchorOptions');
+            infoTab.remove('emailOptions');
+          }
+
+          var callbacks = ckEditorCallbaks[event.editor.name];
+          if (callbacks.onReady ) {
+            callbacks.onDialogDefinition(dialogDefinition.dialog);
+          }
+        });
+      }
+
+      onLoad();
+    };
+
     if (window.CKEDITOR) {
-      return next();
+      return loaded();
     }
 
     var script = document.createElement('script');
-    script.onload = next;
+    script.onload = loaded;
     script.src = basePath + 'ckeditor.js';
 
     document.body.appendChild(script);
@@ -57,7 +106,7 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $) {
     var textAreaID = 'h5p-text-area-' + counter;
     counter++;
     var isEditing = extras.editing;
-    var ck, textarea;
+    var ck, textarea, currentCkEditorDialog, attached;
 
     params = $.extend({
       question: 'Question or description',
@@ -291,83 +340,94 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $) {
       var widthToEmRatio = footerWidth / fontSize;
       var widthToEmThreshold = 23;
 
-      if (widthToEmRatio <= widthToEmThreshold) {
-        self.submitButton.innerHTML = '';
+      self.submitButton.innerHTML = (widthToEmRatio <= widthToEmThreshold) ? '' : params.i10n.submitButtonLabel;
+
+      // resize CkEditor
+      resizeCKEditor();
+    };
+
+    /**
+     * Destroy CKEditor before we are about to be hidden
+     * @returns {undefined}
+     */
+    var onHide = function () {
+      if (currentCkEditorDialog) {
+        currentCkEditorDialog.hide();
+        currentCkEditorDialog = undefined;
       }
-      else {
-        self.submitButton.innerHTML = params.i10n.submitButtonLabel;
+
+      if (ck) {
+        ck.destroy();
+        ck = undefined;
       }
     };
 
     /**
-     * Setup CK Editor listeners
+     * Resize the CK Editor
      * @returns {undefined}
      */
-    var setupCKEditor = function () {
-      var CKEDITOR = window.CKEDITOR;
+    var resizeCKEditor = function() {
+      // Do nothing if I am not visible or if the CK instance is not created yet
+      if (!self.$container.is(':visible') || ck === undefined) {
+        return;
+      }
 
-      // Resize the CKEDITOR on initialization using jquery
-      CKEDITOR.on('instanceLoaded', function(event) {
-        if (event.editor.name !== textAreaID) {
-          return; // Only resize the current editor
-        }
+      var containerHeight = self.$inputWrapper.height();
+      ck.resize(CKEditorConfig.width, containerHeight-3, false, true);
+    };
 
-        var containerHeight = self.$inputWrapper.height();
-        var toolBarHeight = self.$inputWrapper.find('.cke_top').outerHeight();
-        var editorFooterHeight = self.$inputWrapper.find('.cke_bottom').outerHeight();
-        var offset = toolBarHeight + editorFooterHeight + 3;
-        var padding = parseInt(self.$inputWrapper.css('padding').replace(/[^-\d.]/g, ''));
-
-        var realHeight = containerHeight - offset;
-        var minHeight = 80;
-
-        if (realHeight > minHeight) {
-          self.$inputWrapper.find('.cke_contents').css('height', realHeight);
-        }
-        else {
-          self.$inputWrapper.find('.cke_contents').css('height', minHeight);
-          var header = $(self.textWrapper).outerHeight();
-          var footer = $(self.footer).outerHeight();
-          $(self.wrapper).css('min-height', minHeight + offset + padding + padding + header + footer);
-        }
+    /**
+     * Resize the CK Editor Dialogs
+     * @param  {CKEDITOR.Dialog} dialog The dialog to resize
+     * @returns {undefined}
+     */
+    var resizeCkEditorDialog = function (dialog) {
+      // Not nice to get the parent's $container, but we dont have any nice
+      // ways of doing this
+      var ivHeight = extras.parent.$container.height();
+      var dialogElement = dialog.getElement();
+      var dialogBodyElement = dialogElement.find('.cke_dialog_body').$[0];
+      $(dialogBodyElement).css({
+        'max-height': ivHeight,
+        'overflow-y': 'scroll'
       });
 
-      // Ensure dialog doesn't overflow out of iframe
-      CKEDITOR.on('dialogDefinition', function(e) {
-        var dialogDefinition = e.data.definition;
-        var dialogName = e.data.name;
-        var dialog = e.data.definition.dialog;
+      var dialogContents = dialogElement.find('.cke_dialog_contents').$[0];
+      $(dialogContents).css('margin-top', 0);
 
-        // Configure dialogs to hide unecessary elements
-        if (dialogName == 'link') {
-          var infoTab = dialogDefinition.getContents('info');
-          infoTab.remove('linkType');
-          infoTab.remove('anchorOptions');
-          infoTab.remove('emailOptions');
-        }
+      // Resize link dialog
+      var dialogContentsBody = dialogElement.find('.cke_dialog_contents_body').$[0];
+      $(dialogContentsBody).css('height', 'inherit');
+    };
 
-        // Prevent overflowing out of H5P iframe
-        dialog.on('show', function () {
-          var ivHeight = H5P.instances[0].$container.height();
-          var dialogBodyElement = this.getElement().find('.cke_dialog_body').$[0];
-          $(dialogBodyElement).css({
-            'max-height': ivHeight,
-            'overflow-y': 'scroll'
-          });
+    /**
+     * Setup CK Editor dialogs
+     * @param {CKEDITOR.Dialog} dialog The dialog
+     * @returns {undefined}
+     */
+    var onDialogDefinition = function (dialog) {
+      // Prevent overflowing out of H5P iframe
+      dialog.on('show', function () {
+        currentCkEditorDialog = this;
 
-          var dialogContents = this.getElement().find('.cke_dialog_contents').$[0];
-          $(dialogContents).css('margin-top', 0);
-
-          // Resize link dialog
-          var dialogContentsBody = this.getElement().find('.cke_dialog_contents_body').$[0];
-          $(dialogContentsBody).css('height', 'inherit');
-        });
+        self.on('resize', resizeCkEditorDialog.bind(self, this));
+        resizeCkEditorDialog(this);
       });
 
+      dialog.on('hide', function () {
+        self.off('resize', resizeCkEditorDialog);
+        currentCkEditorDialog = undefined;
+      });
+    };
+
+    /**
+     * Enable the textarea
+     * @returns {undefined}
+     */
+    var enableTextarea = function () {
       // Enable the textarea
       textarea.disabled = false;
     };
-
 
     /**
      * Attach function called by H5P framework to insert H5P content into
@@ -383,11 +443,21 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $) {
       $container.get(0).classList.add('h5p-iv-open-ended-question-wrapper');
       $container.append(createOpenEndedQuestion());
 
-      if (!isEditing) {
-        loadCKEditor(ckEditorBase, setupCKEditor);
+      // Don't load CKEditor if
+      // -- in editor (will break the ckeditor provided by the H5P editor)
+      // -- attach has been run previously
+      // Note: Can't do this in the constructor, since the getLibraryFilePath
+      // will fail at that time
+      if (!isEditing && !attached) {
+        loadCKEditor(ckEditorBase, textAreaID, enableTextarea, resizeCKEditor, onDialogDefinition);
       }
+      else {
+        enableTextarea();
+      }
+      attached = true;
 
       self.on('resize', onResize);
+      self.on('hide', onHide);
     };
   }
 
