@@ -54,8 +54,9 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $) {
       // Make sure this is only done once.
       if (!ckEditorListenerInitialized) {
         ckEditorListenerInitialized = true;
+        var CKEDITOR = window.CKEDITOR;
         // Resize the CKEDITOR on initialization using jquery
-        window.CKEDITOR.on('instanceReady', function(event) {
+        CKEDITOR.on('instanceReady', function(event) {
           var callbacks = ckEditorCallbaks[event.editor.name];
           if (callbacks.onReady) {
             callbacks.onReady();
@@ -63,7 +64,7 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $) {
         });
 
         // Listen to dialog definitions
-        window.CKEDITOR.on('dialogDefinition', function(event) {
+        CKEDITOR.on('dialogDefinition', function(event) {
           var dialogDefinition = event.data.definition;
 
           // Configure dialogs to hide unecessary elements
@@ -73,6 +74,9 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $) {
             infoTab.remove('anchorOptions');
             infoTab.remove('emailOptions');
           }
+
+          // Disable dialog resize
+          dialogDefinition.resizable = CKEDITOR.DIALOG_RESIZE_NONE;
 
           var callbacks = ckEditorCallbaks[event.editor.name];
           if (callbacks.onReady ) {
@@ -106,7 +110,7 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $) {
     var textAreaID = 'h5p-text-area-' + counter;
     counter++;
     var isEditing = extras.editing;
-    var ck, textarea, currentCkEditorDialog, attached;
+    var ck, textarea, currentCkEditorDialog, attached, userResponse;
 
     params = $.extend({
       question: 'Question or description',
@@ -164,22 +168,10 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $) {
       textarea = document.createElement('textarea');
       textarea.classList.add('h5p-iv-open-ended-question-input');
       textarea.id = textAreaID;
-      textarea.disabled = true;
-      textarea.placeholder = params.placeholder;
 
-      // Initialize the CKEditor on focus and ensure it fits
-      textarea.addEventListener('focus', function() {
-
-        // Set the CK Editor UI language:
-        CKEditorConfig.defaultLanguage = CKEditorConfig.language = params.i10n.language;
-
-        ck = window.CKEDITOR.replace(textAreaID, CKEditorConfig);
-
-        // Send an 'interacted' event every time the user exits the text area
-        ck.on('blur', function() {
-          createXAPIEvent('interacted', true);
-        });
-      });
+      if (userResponse) {
+        textarea.value = userResponse;
+      }
 
       self.$inputWrapper.append(textarea);
 
@@ -218,9 +210,7 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $) {
      * @returns {string} The user response
      */
     var getResponse = function () {
-      var CKEDITOR = window.CKEDITOR;
-      return CKEDITOR.instances[textAreaID] !== undefined ?
-        CKEDITOR.instances[textAreaID].getData().trim() : '';
+      return ck !== undefined ? ck.getData().trim() : '';
     };
 
     /**
@@ -355,13 +345,19 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $) {
      * @returns {undefined}
      */
     var onHide = function () {
+      // Save the user response
+      userResponse = getResponse();
+
+      // Stop listening to resize events
+      self.off('resize', onResize);
+
       if (currentCkEditorDialog) {
         currentCkEditorDialog.hide();
         currentCkEditorDialog = undefined;
       }
 
       if (ck) {
-        ck.destroy();
+        ck.destroy(true);
         ck = undefined;
       }
     };
@@ -386,6 +382,10 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $) {
      * @returns {undefined}
      */
     var resizeCkEditorDialog = function (dialog) {
+      if (ck === undefined) {
+        return;
+      }
+
       // Not nice to get the parent's $container, but we dont have any nice
       // ways of doing this
       var ivHeight = extras.parent.$container.height();
@@ -402,6 +402,12 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $) {
       // Resize link dialog
       var dialogContentsBody = dialogElement.find('.cke_dialog_contents_body').$[0];
       $(dialogContentsBody).css('height', 'inherit');
+
+      // CKEditor is doing some repositioning inside a timeout. Therefore we need
+      // this with a higher value. :(
+      setTimeout(function () {
+        dialog.move(dialog.getPosition().x, extras.parent.$container.offset().top);
+      }, 100);
     };
 
     /**
@@ -413,7 +419,6 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $) {
       // Prevent overflowing out of H5P iframe
       dialog.on('show', function () {
         currentCkEditorDialog = this;
-
         self.on('resize', resizeCkEditorDialog.bind(self, this));
         resizeCkEditorDialog(this);
       });
@@ -425,12 +430,17 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $) {
     };
 
     /**
-     * Enable the textarea
+     * Initialize CK Editor
      * @returns {undefined}
      */
-    var enableTextarea = function () {
-      // Enable the textarea
-      textarea.disabled = false;
+    var initializeCkEditor = function () {
+      CKEditorConfig.defaultLanguage = CKEditorConfig.language = params.i10n.language;
+      ck = window.CKEDITOR.replace(textarea, CKEditorConfig);
+
+      // Send an 'interacted' event every time the user exits the text area
+      ck.on('blur', function() {
+        createXAPIEvent('interacted', true);
+      });
     };
 
     /**
@@ -452,16 +462,18 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $) {
       // -- attach has been run previously
       // Note: Can't do this in the constructor, since the getLibraryFilePath
       // will fail at that time
-      if (!isEditing && !attached) {
-        loadCKEditor(ckEditorBase, textAreaID, enableTextarea, resizeCKEditor, onDialogDefinition);
+      if (!isEditing) {
+        if (!attached) {
+          loadCKEditor(ckEditorBase, textAreaID, initializeCkEditor, resizeCKEditor, onDialogDefinition);
+        }
+        else {
+          initializeCkEditor();
+        }
+        attached = true;
       }
-      else {
-        enableTextarea();
-      }
-      attached = true;
 
       self.on('resize', onResize);
-      self.on('hide', onHide);
+      self.once('hide', onHide);
     };
   }
 
