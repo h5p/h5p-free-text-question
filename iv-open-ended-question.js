@@ -57,7 +57,7 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $) {
         // Resize the CKEDITOR on initialization using jquery
         window.CKEDITOR.on('instanceReady', function(event) {
           var callbacks = ckEditorCallbaks[event.editor.name];
-          if (callbacks.onReady ) {
+          if (callbacks.onReady) {
             callbacks.onReady();
           }
         });
@@ -169,6 +169,10 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $) {
 
       // Initialize the CKEditor on focus and ensure it fits
       textarea.addEventListener('focus', function() {
+
+        // Set the CK Editor UI language:
+        CKEditorConfig.defaultLanguage = CKEditorConfig.language = params.i10n.language;
+
         ck = window.CKEDITOR.replace(textAreaID, CKEditorConfig);
 
         // Send an 'interacted' event every time the user exits the text area
