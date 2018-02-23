@@ -6,14 +6,6 @@
     "importance": "high"
   },
   {
-    "label": "Placeholder text",
-    "name": "placeholder",
-    "type": "text",
-    "importance": "high",
-    "default": "Enter your response here",
-    "description": "Text that initially will be shown in the input field. Will be removed automatically when the user starts writing."
-  },
-  {
     "label": "Max score",
     "name": "maxScore",
     "type": "number",

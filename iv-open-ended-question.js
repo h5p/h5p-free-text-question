@@ -113,8 +113,7 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $) {
     var ck, textarea, currentCkEditorDialog, attached, userResponse;
 
     params = $.extend({
-      question: 'Question or description',
-      placeholder: 'Enter your response here'
+      question: 'Question or description'
     }, params);
 
     /**
@@ -329,6 +328,10 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $) {
      * @returns {undefined}
      */
     var onResize = function() {
+      if (!attached) {
+        return;
+      }
+
       var footerWidth = $(self.$container).width();
       var fontSize = parseInt($(self.$container).css('font-size'), 10);
       var widthToEmRatio = footerWidth / fontSize;
@@ -345,11 +348,12 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $) {
      * @returns {undefined}
      */
     var onHide = function () {
+      if (ck === undefined) {
+        return;
+      }
+
       // Save the user response
       userResponse = getResponse();
-
-      // Stop listening to resize events
-      self.off('resize', onResize);
 
       if (currentCkEditorDialog) {
         currentCkEditorDialog.hide();
@@ -357,7 +361,7 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $) {
       }
 
       if (ck) {
-        ck.destroy(true);
+        ck.destroy();
         ck = undefined;
       }
     };
@@ -373,7 +377,14 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $) {
       }
 
       var containerHeight = self.$inputWrapper.height();
-      ck.resize(CKEditorConfig.width, containerHeight-3, false, true);
+
+      // In some scenarios resize throws an exception. No problems seen
+      try {
+        ck.resize(CKEditorConfig.width, containerHeight-3, false, true);
+      }
+      catch(e) {
+        // Do nothing!
+      }
     };
 
     /**
@@ -435,12 +446,16 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $) {
      */
     var initializeCkEditor = function () {
       CKEditorConfig.defaultLanguage = CKEditorConfig.language = params.i10n.language;
-      ck = window.CKEDITOR.replace(textarea, CKEditorConfig);
 
-      // Send an 'interacted' event every time the user exits the text area
-      ck.on('blur', function() {
-        createXAPIEvent('interacted', true);
-      });
+      // CKEditor has some timers when destroying
+      setTimeout(function () {
+        ck = window.CKEDITOR.replace(textarea, CKEditorConfig);
+
+        // Send an 'interacted' event every time the user exits the text area
+        ck.on('blur', function() {
+          createXAPIEvent('interacted', true);
+        });
+      },1);
     };
 
     /**
@@ -469,12 +484,13 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $) {
         else {
           initializeCkEditor();
         }
-        attached = true;
       }
 
-      self.on('resize', onResize);
-      self.once('hide', onHide);
+      attached = true;
     };
+
+    self.on('resize', onResize);
+    self.on('hide', onHide);
   }
 
   // Extends the event dispatcher
