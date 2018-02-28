@@ -1,6 +1,6 @@
 {
-  "machineName": "H5P.IVOpenEndedQuestion",
-  "title": "IV Open-Ended Question",
+  "machineName": "H5P.FreeTextQuestion",
+  "title": "Free Text Question",
   "license": "MIT",
   "author": "Joubel",
   "majorVersion": 1,
@@ -13,12 +13,12 @@
   },
   "preloadedJs": [
     {
-      "path": "iv-open-ended-question.js"
+      "path": "h5p-free-text-question.js"
     }
   ],
   "preloadedCss": [
     {
-      "path": "iv-open-ended-question.css"
+      "path": "h5p-free-text-question.css"
     }
   ],
   "preloadedDependencies": [

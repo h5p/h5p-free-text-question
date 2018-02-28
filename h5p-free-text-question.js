@@ -1,6 +1,6 @@
 var H5P = H5P || {};
 
-H5P.IVOpenEndedQuestion = (function (EventDispatcher, $) {
+H5P.FreeTextQuestion = (function (EventDispatcher, $) {
   var counter = 0;
 
   var CKEditorConfig = {
@@ -105,7 +105,7 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $) {
    * @param       {Object}  extras    Extra parameters
    * @constructor
    */
-  function IVOpenEndedQuestion(params, contentId, extras) {
+  function FreeTextQuestion(params, contentId, extras) {
     var self = this;
     var textAreaID = 'h5p-text-area-' + counter;
     counter++;
@@ -122,7 +122,7 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $) {
      */
     var createOpenEndedQuestion = function () {
       self.wrapper = document.createElement('div');
-      self.wrapper.classList.add('h5p-iv-open-ended-question');
+      self.wrapper.classList.add('h5p-free-text-question');
 
       self.wrapper.appendChild(createTextWrapper());
       self.wrapper.appendChild(createInputWrapper());
@@ -137,15 +137,15 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $) {
      */
     var createTextWrapper = function () {
       self.textWrapper = document.createElement('div');
-      self.textWrapper.classList.add('h5p-iv-open-ended-question-text-wrapper');
+      self.textWrapper.classList.add('h5p-free-text-question-text-wrapper');
 
       var text = document.createElement('div');
-      text.classList.add('h5p-iv-open-ended-question-text');
+      text.classList.add('h5p-free-text-question-text');
       text.innerHTML = params.question;
 
       if (params.isRequired == true) {
         var requiredText = document.createElement('div');
-        requiredText.classList.add('h5p-iv-open-ended-required-text');
+        requiredText.classList.add('h5p-free-text-question-required-text');
         requiredText.innerHTML = '*' + params.i10n.requiredText;
         self.textWrapper.appendChild(requiredText);
       }
@@ -161,11 +161,11 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $) {
      */
     var createInputWrapper = function () {
       self.$inputWrapper = $('<div/>', {
-        'class': 'h5p-iv-open-ended-question-input-wrapper'
+        'class': 'h5p-free-text-question-input-wrapper'
       });
 
       textarea = document.createElement('textarea');
-      textarea.classList.add('h5p-iv-open-ended-question-input');
+      textarea.classList.add('h5p-free-text-question-input');
       textarea.id = textAreaID;
 
       if (userResponse) {
@@ -184,14 +184,14 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $) {
      */
     var createRequiredMessageWrapper = function () {
       self.requiredMessageWrapper = document.createElement('div');
-      self.requiredMessageWrapper.classList.add('h5p-iv-open-ended-question-required-wrapper');
+      self.requiredMessageWrapper.classList.add('h5p-free-text-question-required-wrapper');
 
       var requiredMessage = document.createElement('div');
-      requiredMessage.classList.add('h5p-iv-open-ended-question-required-message');
+      requiredMessage.classList.add('h5p-free-text-question-required-message');
       requiredMessage.innerHTML = params.i10n.requiredMessage;
 
       var requiredButton = document.createElement('button');
-      requiredButton.classList.add('h5p-iv-open-ended-question-required-exit');
+      requiredButton.classList.add('h5p-free-text-question-required-exit');
       requiredButton.addEventListener('click', function () {
         hideRequiredMessage();
       });
@@ -218,10 +218,10 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $) {
      */
     var createFooter = function () {
       self.footer = document.createElement('div');
-      self.footer.classList.add('h5p-iv-open-ended-question-footer');
+      self.footer.classList.add('h5p-free-text-question-footer');
 
       self.submitButton = document.createElement('button');
-      self.submitButton.classList.add('h5p-iv-open-ended-question-button-submit');
+      self.submitButton.classList.add('h5p-free-text-question-button-submit');
       self.submitButton.type = 'button';
       self.submitButton.innerHTML = params.i10n.submitButtonLabel;
 
@@ -238,7 +238,7 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $) {
       // Create a 'skip button' if we are allowed to
       if (params.isRequired == false) {
         var skipButton = document.createElement('button');
-        skipButton.classList.add('h5p-iv-open-ended-question-button-skip');
+        skipButton.classList.add('h5p-free-text-question-button-skip');
         skipButton.type = 'button';
         skipButton.innerHTML = params.i10n.skipButtonLabel;
 
@@ -256,11 +256,11 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $) {
     };
 
     var showRequiredMessage = function () {
-      self.requiredMessageWrapper.classList.remove('h5p-iv-open-ended-question-hidden');
+      self.requiredMessageWrapper.classList.remove('h5p-free-text-question-hidden');
     };
 
     var hideRequiredMessage = function () {
-      self.requiredMessageWrapper.classList.add('h5p-iv-open-ended-question-hidden');
+      self.requiredMessageWrapper.classList.add('h5p-free-text-question-hidden');
     };
 
     /**
@@ -302,7 +302,7 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $) {
         'en-US': question // We don't know the language at runtime
       };
       definition.extensions = {
-        'https://h5p.org/x-api/h5p-machine-name': 'H5P.IVOpenEndedQuestion'
+        'https://h5p.org/x-api/h5p-machine-name': 'H5P.FreeTextQuestion'
       };
 
       return definition;
@@ -469,7 +469,7 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $) {
       self.$container = $container;
       var ckEditorBase = self.getLibraryFilePath('ckeditor/');
 
-      $container.get(0).classList.add('h5p-iv-open-ended-question-wrapper');
+      $container.get(0).classList.add('h5p-free-text-question-wrapper');
       $container.append(createOpenEndedQuestion());
 
       // Don't load CKEditor if
@@ -494,8 +494,8 @@ H5P.IVOpenEndedQuestion = (function (EventDispatcher, $) {
   }
 
   // Extends the event dispatcher
-  IVOpenEndedQuestion.prototype = Object.create(EventDispatcher.prototype);
-  IVOpenEndedQuestion.prototype.constructor = IVOpenEndedQuestion;
+  FreeTextQuestion.prototype = Object.create(EventDispatcher.prototype);
+  FreeTextQuestion.prototype.constructor = FreeTextQuestion;
 
-  return IVOpenEndedQuestion;
+  return FreeTextQuestion;
 })(H5P.EventDispatcher, H5P.jQuery);
