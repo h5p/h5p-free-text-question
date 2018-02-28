@@ -1,6 +1,6 @@
-# H5P IV Open-Ended Question
+# H5P Free Text Question
 
-Creates an open ended question within an Interactive Video. Comes bundled with a CKEditor.
+Creates a free text question where students can use a wysiwyg editor for creating their answer.
 
 ## License
 

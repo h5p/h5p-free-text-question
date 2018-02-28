@@ -21,7 +21,7 @@
     "description": "Learners must provide an answer in order to proceed"
   },
   {
-    "label": "Localize IV Open Ended Question buttons",
+    "label": "Localize Free Text Question buttons",
     "name": "i10n",
     "type": "group",
     "common": true,
