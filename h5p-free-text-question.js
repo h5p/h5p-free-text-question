@@ -109,7 +109,7 @@ H5P.FreeTextQuestion = (function (EventDispatcher, $) {
     var self = this;
     var textAreaID = 'h5p-text-area-' + counter;
     counter++;
-    var isEditing = extras.editing;
+    var isEditing = (window.H5PEditor !== undefined);
     var ck, textarea, currentCkEditorDialog, attached, userResponse;
 
     params = $.extend({
@@ -276,7 +276,7 @@ H5P.FreeTextQuestion = (function (EventDispatcher, $) {
       // Add question to the definition of the xAPI statement
       var definition = xAPIEvent.getVerifiedStatementValue(['object', 'definition']);
       $.extend(definition, getXAPIDefinition(this.paramsquestion));
-      
+
       xAPIEvent.setScoredResult(null, params.maxScore, self);
 
       // Add the response to the xAPI statement
