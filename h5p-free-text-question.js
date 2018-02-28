@@ -276,10 +276,12 @@ H5P.FreeTextQuestion = (function (EventDispatcher, $) {
       // Add question to the definition of the xAPI statement
       var definition = xAPIEvent.getVerifiedStatementValue(['object', 'definition']);
       $.extend(definition, getXAPIDefinition(this.paramsquestion));
+      
+      xAPIEvent.setScoredResult(null, params.maxScore, self);
 
       // Add the response to the xAPI statement
-      xAPIEvent.data.statement.result = {};
-      xAPIEvent.data.statement.result.response = getResponse();
+      // Return a stored user response if it exists
+      xAPIEvent.data.statement.result.response = userResponse ? userResponse : getResponse();
 
       if (trigger) {
         self.trigger(xAPIEvent);
@@ -321,6 +323,32 @@ H5P.FreeTextQuestion = (function (EventDispatcher, $) {
       return {
         statement: XAPIEvent.data.statement
       };
+    };
+
+    /**
+     * Used for contracts.
+     * The current score will always be null until it has been graded in a report.
+     * We use null instead of 0 to keep track of which open ended questions have
+     * not been graded yet.
+     *
+     * @method getScore
+     * @public
+     * @returns {Number} The current score.
+     */
+    self.getScore = function () {
+      return null;
+    };
+
+    /**
+     * Used for contracts.
+     * Checks the maximum score for this task.
+     *
+     * @method getMaxScore
+     * @public
+     * @returns {Number} The maximum score.
+     */
+    self.getMaxScore = function () {
+      return params.maxScore;
     };
 
     /**
