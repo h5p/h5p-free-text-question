@@ -66,6 +66,10 @@
   border: 1px solid #d1d1d1;
 }
 
+.h5p-free-text-question-input p {
+  margin: 0 0 1em 0;
+}
+
 .h5p-free-text-question-input-wrapper.h5p-questionnaire-required .h5p-subcontent-question {
   padding: 0.5em 5em 1em 1em;
 }
