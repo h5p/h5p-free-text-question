@@ -197,6 +197,10 @@ H5P.FreeTextQuestion = (function (EventDispatcher, $, CKEditor) {
 
       xAPIEvent.setScoredResult(null, params.maxScore, self);
 
+      // Set the raw score to undefined, since null is not allowed, and we can't
+      // return undefined in getScore because then core won't add the result
+      xAPIEvent.data.statement.result.score.raw = undefined;
+
       // Add the response to the xAPI statement
       // Return a stored user response if it exists
       xAPIEvent.data.statement.result.response = ckEditor.getData();
