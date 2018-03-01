@@ -149,7 +149,7 @@ H5P.FreeTextQuestion = (function (EventDispatcher, $, CKEditor) {
 
       if (!isEditing) {
         self.submitButton.addEventListener('click', function () {
-          if (ckEditor.getData().length !== 0 && params.isRequired) {
+          if (params.isRequired && ckEditor.getData().length === 0) {
             showRequiredMessage();
           }
           else {
