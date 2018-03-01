@@ -119,9 +119,11 @@ H5P.FreeTextQuestion = (function (EventDispatcher, $, CKEditor) {
 
       var requiredButton = document.createElement('button');
       requiredButton.classList.add('h5p-free-text-question-required-exit');
-      requiredButton.addEventListener('click', function () {
-        hideRequiredMessage();
-      });
+      if (!isEditing) {
+        requiredButton.addEventListener('click', function () {
+          hideRequiredMessage();
+        });
+      }
 
       self.requiredMessageWrapper.appendChild(requiredMessage);
       self.requiredMessageWrapper.appendChild(requiredButton);
@@ -145,15 +147,17 @@ H5P.FreeTextQuestion = (function (EventDispatcher, $, CKEditor) {
       self.submitButton.type = 'button';
       self.submitButton.innerHTML = params.i10n.submitButtonLabel;
 
-      self.submitButton.addEventListener('click', function () {
-        if (ckEditor.getData().length !== 0 && params.isRequired) {
-          showRequiredMessage();
-        }
-        else {
-          createXAPIEvent('answered', true);
-          self.trigger('continue');
-        }
-      });
+      if (!isEditing) {
+        self.submitButton.addEventListener('click', function () {
+          if (ckEditor.getData().length !== 0 && params.isRequired) {
+            showRequiredMessage();
+          }
+          else {
+            createXAPIEvent('answered', true);
+            self.trigger('continue');
+          }
+        });
+      }
 
       // Create a 'skip button' if we are allowed to
       if (params.isRequired == false) {
@@ -162,10 +166,12 @@ H5P.FreeTextQuestion = (function (EventDispatcher, $, CKEditor) {
         self.skipButton.type = 'button';
         self.skipButton.innerHTML = params.i10n.skipButtonLabel;
 
-        self.skipButton.addEventListener('click', function () {
-          createXAPIEvent('interacted', true);
-          self.trigger('continue');
-        });
+        if (!isEditing) {
+          self.skipButton.addEventListener('click', function () {
+            createXAPIEvent('interacted', true);
+            self.trigger('continue');
+          });
+        }
 
         self.footer.appendChild(self.skipButton);
       }
