@@ -1,0 +1,47 @@
+{
+  "semantics": [
+    {
+      "label": "Spørsmål"
+    },
+    {
+      "label": "Plassholdertekst",
+      "default": "Skriv ditt svar her",
+      "description": "Denne teksten vises initielt i tekstfeltet, og fjernes når brukeren trykker i feltet"
+    },
+    {
+      "label": "Maks antall poeng",
+      "description": "Denne verdien kan brukes ved sensur"
+    },
+    {
+      "label": "Obligatorisk",
+      "description": "Når denne er valgt, må studenten avgi et svar for å kunne fortsette"
+    },
+    {
+      "label": "Oversett Free Text Question",
+      "fields": [
+        {
+          "label": "Hjelpetekst ved obligatorisk oppgave",
+          "description": "Denne teksten vises når oppgaven er obligatorisk",
+          "default": "obligatorisk"
+        },
+        {
+          "label": "Hjelptekst for ikke-besvart obligatorisk oppgave",
+          "default": "Dette spørsmålet krever et svar",
+          "description": "Teksten vises hvis studenten prøver å gå videre uten å ha avgitt svar på en obligatorisk oppgave."
+        },
+        {
+          "label": "Merkelapp for hopp-over-knapp",
+          "default": "Hopp over Question"
+        },
+        {
+          "label": "Merkelapp for fortsett-knapp",
+          "default": "Avgi svar og fortsett"
+        },
+        {
+          "label": "Språk for wysiwyg-verktøyet",
+          "description": "Språket som brukes i wysiwyg-verktøylinjen i brukergrensesnittet"
+        }
+      ]
+    }
+  ]
+}
