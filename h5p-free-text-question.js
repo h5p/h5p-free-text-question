@@ -1,103 +1,7 @@
 var H5P = H5P || {};
 
-H5P.FreeTextQuestion = (function (EventDispatcher, $) {
+H5P.FreeTextQuestion = (function (EventDispatcher, $, CKEditor) {
   var counter = 0;
-
-  var CKEditorConfig = {
-    customConfig: '',
-    toolbarGroups: [
-      { name: 'document', groups: [ 'mode', 'document', 'doctools' ] },
-      { name: 'styles', groups: [ 'styles' ] },
-      { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
-      { name: 'clipboard', groups: [ 'clipboard', 'undo' ] },
-      { name: 'editing', groups: [ 'find', 'selection', 'spellchecker', 'editing' ] },
-      { name: 'forms', groups: [ 'forms' ] },
-      { name: 'paragraph', groups: [ 'list', 'indent', 'blocks', 'align', 'bidi', 'paragraph' ] },
-      { name: 'colors', groups: [ 'colors' ] },
-      { name: 'links', groups: [ 'links' ] },
-      { name: 'insert', groups: [ 'insert' ] },
-      { name: 'tools', groups: [ 'tools' ] },
-      { name: 'others', groups: [ 'others' ] },
-      { name: 'about', groups: [ 'about' ] }
-    ],
-    startupFocus: true,
-    width: '100%',
-    resize_enabled: false,
-    linkShowAdvancedTab: false,
-    linkShowTargetTab: false,
-    removeButtons: 'Cut,Copy,Paste,Undo,Redo,Anchor,Subscript,Superscript,Font,BulletedList,NumberedList,Outdent,Indent,About'
-  };
-
-  // Contains a "global" mapping between editor names and callback functions
-  var ckEditorCallbaks = {};
-
-  // Have we setup our global CK Editor listener?
-  var ckEditorListenerInitialized = false;
-
-  /**
-   * Loads the CK Editor dynamically
-   * @param  {string}   basePath   The basepath for ckeditor files
-   * @param  {string}   editorName The editor name
-   * @param  {Function} onLoad     Function invoked when CKEDITOR is loaded
-   * @param  {Function} onReady    Function invoked when a CKEDITOR instance is ready
-   * @param  {Function} onDialogDefinition  Function invoked when a dialog defintion is ready
-   * @return {undefined}
-   */
-  var loadCKEditor = function (basePath, editorName, onLoad, onReady, onDialogDefinition) {
-
-    ckEditorCallbaks[editorName] = {
-      onReady: onReady,
-      onDialogDefinition: onDialogDefinition
-    };
-
-    var loaded = function () {
-      // Make sure this is only done once.
-      if (!ckEditorListenerInitialized) {
-        ckEditorListenerInitialized = true;
-        var CKEDITOR = window.CKEDITOR;
-        // Resize the CKEDITOR on initialization using jquery
-        CKEDITOR.on('instanceReady', function(event) {
-          var callbacks = ckEditorCallbaks[event.editor.name];
-          if (callbacks.onReady) {
-            callbacks.onReady();
-          }
-        });
-
-        // Listen to dialog definitions
-        CKEDITOR.on('dialogDefinition', function(event) {
-          var dialogDefinition = event.data.definition;
-
-          // Configure dialogs to hide unecessary elements
-          if (event.data.name == 'link') {
-            var infoTab = dialogDefinition.getContents('info');
-            infoTab.remove('linkType');
-            infoTab.remove('anchorOptions');
-            infoTab.remove('emailOptions');
-          }
-
-          // Disable dialog resize
-          dialogDefinition.resizable = CKEDITOR.DIALOG_RESIZE_NONE;
-
-          var callbacks = ckEditorCallbaks[event.editor.name];
-          if (callbacks.onReady ) {
-            callbacks.onDialogDefinition(dialogDefinition.dialog);
-          }
-        });
-      }
-
-      onLoad();
-    };
-
-    if (window.CKEDITOR) {
-      return loaded();
-    }
-
-    var script = document.createElement('script');
-    script.onload = loaded;
-    script.src = basePath + 'ckeditor.js';
-
-    document.body.appendChild(script);
-  };
 
   /**
    * @param       {Object}  params    The parameters
@@ -106,15 +10,28 @@ H5P.FreeTextQuestion = (function (EventDispatcher, $) {
    * @constructor
    */
   function FreeTextQuestion(params, contentId, extras) {
+    EventDispatcher.call(this);
+
     var self = this;
     var textAreaID = 'h5p-text-area-' + counter;
     counter++;
     var isEditing = (window.H5PEditor !== undefined);
-    var ck, textarea, currentCkEditorDialog, attached, userResponse;
-
+    var attached;
     params = $.extend({
-      question: 'Question or description'
+      question: 'Question or description',
+      placeholder: 'Enter your response here',
+      maxScore: 1,
+      isRequired: false,
+      i10n: {
+        requiredText: 'required',
+        requiredMessage: 'This question requires an answer',
+        skipButtonLabel: 'Skip Question',
+        submitButtonLabel: 'Answer and proceed',
+        language: 'en'
+      }
     }, params);
+
+    var ckEditor = new CKEditor(textAreaID, params.i10n.language, extras.parent.$container);
 
     /**
      * Create the open ended question element
@@ -164,13 +81,21 @@ H5P.FreeTextQuestion = (function (EventDispatcher, $) {
         'class': 'h5p-free-text-question-input-wrapper'
       });
 
-      textarea = document.createElement('textarea');
+      var textarea = document.createElement('div');
       textarea.classList.add('h5p-free-text-question-input');
       textarea.id = textAreaID;
+      textarea.contenteditable = true;
 
-      if (userResponse) {
-        textarea.value = userResponse;
+      var content;
+      if (!isEditing) {
+        textarea.addEventListener('click', function () {
+          ckEditor.create();
+        });
+
+        content = ckEditor.getData();
       }
+
+      textarea.innerHTML = content ? content : params.placeholder;
 
       self.$inputWrapper.append(textarea);
 
@@ -206,13 +131,6 @@ H5P.FreeTextQuestion = (function (EventDispatcher, $) {
     };
 
     /**
-     * @returns {string} The user response
-     */
-    var getResponse = function () {
-      return ck !== undefined ? ck.getData().trim() : '';
-    };
-
-    /**
      * Create the footer and associated buttons
      * @returns {HTMLElement} Footer
      */
@@ -226,7 +144,7 @@ H5P.FreeTextQuestion = (function (EventDispatcher, $) {
       self.submitButton.innerHTML = params.i10n.submitButtonLabel;
 
       self.submitButton.addEventListener('click', function () {
-        if (getResponse().length !== 0 && params.isRequired) {
+        if (ckEditor.getData().length !== 0 && params.isRequired) {
           showRequiredMessage();
         }
         else {
@@ -275,13 +193,13 @@ H5P.FreeTextQuestion = (function (EventDispatcher, $) {
 
       // Add question to the definition of the xAPI statement
       var definition = xAPIEvent.getVerifiedStatementValue(['object', 'definition']);
-      $.extend(definition, getXAPIDefinition(this.paramsquestion));
+      $.extend(definition, getXAPIDefinition(params.question));
 
       xAPIEvent.setScoredResult(null, params.maxScore, self);
 
       // Add the response to the xAPI statement
       // Return a stored user response if it exists
-      xAPIEvent.data.statement.result.response = userResponse ? userResponse : getResponse();
+      xAPIEvent.data.statement.result.response = ckEditor.getData();
 
       if (trigger) {
         self.trigger(xAPIEvent);
@@ -355,7 +273,7 @@ H5P.FreeTextQuestion = (function (EventDispatcher, $) {
      * Listen to resize events in order to use smaller buttons
      * @returns {undefined}
      */
-    var onResize = function() {
+    var resize = function() {
       if (!attached) {
         return;
       }
@@ -372,118 +290,14 @@ H5P.FreeTextQuestion = (function (EventDispatcher, $) {
     };
 
     /**
-     * Destroy CKEditor before we are about to be hidden
-     * @returns {undefined}
-     */
-    var onHide = function () {
-      if (ck === undefined) {
-        return;
-      }
-
-      // Save the user response
-      userResponse = getResponse();
-
-      if (currentCkEditorDialog) {
-        currentCkEditorDialog.hide();
-        currentCkEditorDialog = undefined;
-      }
-
-      if (ck) {
-        ck.destroy();
-        ck = undefined;
-      }
-    };
-
-    /**
      * Resize the CK Editor
      * @returns {undefined}
      */
     var resizeCKEditor = function() {
-      // Do nothing if I am not visible or if the CK instance is not created yet
-      if (!self.$container.is(':visible') || ck === undefined) {
-        return;
+      // Do nothing if I am not visible
+      if (self.$container.is(':visible')) {
+        ckEditor.resize(undefined, self.$inputWrapper.height()-4);
       }
-
-      var containerHeight = self.$inputWrapper.height();
-
-      // In some scenarios resize throws an exception. No problems seen
-      try {
-        ck.resize(CKEditorConfig.width, containerHeight-3, false, true);
-      }
-      catch(e) {
-        // Do nothing!
-      }
-    };
-
-    /**
-     * Resize the CK Editor Dialogs
-     * @param  {CKEDITOR.Dialog} dialog The dialog to resize
-     * @returns {undefined}
-     */
-    var resizeCkEditorDialog = function (dialog) {
-      if (ck === undefined) {
-        return;
-      }
-
-      // Not nice to get the parent's $container, but we dont have any nice
-      // ways of doing this
-      var ivHeight = extras.parent.$container.height();
-      var dialogElement = dialog.getElement();
-      var dialogBodyElement = dialogElement.find('.cke_dialog_body').$[0];
-      $(dialogBodyElement).css({
-        'max-height': ivHeight,
-        'overflow-y': 'scroll'
-      });
-
-      var dialogContents = dialogElement.find('.cke_dialog_contents').$[0];
-      $(dialogContents).css('margin-top', 0);
-
-      // Resize link dialog
-      var dialogContentsBody = dialogElement.find('.cke_dialog_contents_body').$[0];
-      $(dialogContentsBody).css('height', 'inherit');
-
-      // CKEditor is doing some repositioning inside a timeout. Therefore we need
-      // this with a higher value. :(
-      setTimeout(function () {
-        dialog.move(dialog.getPosition().x, extras.parent.$container.offset().top);
-      }, 100);
-    };
-
-    /**
-     * Setup CK Editor dialogs
-     * @param {CKEDITOR.Dialog} dialog The dialog
-     * @returns {undefined}
-     */
-    var onDialogDefinition = function (dialog) {
-      // Prevent overflowing out of H5P iframe
-      dialog.on('show', function () {
-        currentCkEditorDialog = this;
-        self.on('resize', resizeCkEditorDialog.bind(self, this));
-        resizeCkEditorDialog(this);
-      });
-
-      dialog.on('hide', function () {
-        self.off('resize', resizeCkEditorDialog);
-        currentCkEditorDialog = undefined;
-      });
-    };
-
-    /**
-     * Initialize CK Editor
-     * @returns {undefined}
-     */
-    var initializeCkEditor = function () {
-      CKEditorConfig.defaultLanguage = CKEditorConfig.language = params.i10n.language;
-
-      // CKEditor has some timers when destroying
-      setTimeout(function () {
-        ck = window.CKEDITOR.replace(textarea, CKEditorConfig);
-
-        // Send an 'interacted' event every time the user exits the text area
-        ck.on('blur', function() {
-          createXAPIEvent('interacted', true);
-        });
-      },1);
     };
 
     /**
@@ -495,30 +309,29 @@ H5P.FreeTextQuestion = (function (EventDispatcher, $) {
      */
     self.attach = function ($container) {
       self.$container = $container;
-      var ckEditorBase = self.getLibraryFilePath('ckeditor/');
 
       $container.get(0).classList.add('h5p-free-text-question-wrapper');
-      $container.append(createOpenEndedQuestion());
+      $container.append(self.wrapper);
 
-      // Don't load CKEditor if
-      // -- in editor (will break the ckeditor provided by the H5P editor)
-      // -- attach has been run previously
-      // Note: Can't do this in the constructor, since the getLibraryFilePath
-      // will fail at that time
+      // Don't load CKEditor if in editor
+      // (will break the ckeditor provided by the H5P editor)
       if (!isEditing) {
-        if (!attached) {
-          loadCKEditor(ckEditorBase, textAreaID, initializeCkEditor, resizeCKEditor, onDialogDefinition);
-        }
-        else {
-          initializeCkEditor();
-        }
+        //ckEditor.create();
       }
 
       attached = true;
     };
 
-    self.on('resize', onResize);
-    self.on('hide', onHide);
+    // Create the HTML:
+    createOpenEndedQuestion();
+
+    // Setup events
+    ckEditor.on('blur', createXAPIEvent.bind(this, 'interacted', true));
+    //ckEditor.on('blur', ckEditor.destroy.bind(ckEditor));
+    ckEditor.on('created', resize);
+    self.on('resize', ckEditor.trigger.bind(ckEditor, 'resize'));
+    self.on('resize', resize);
+    self.on('hide', ckEditor.destroy.bind(ckEditor));
   }
 
   // Extends the event dispatcher
@@ -526,4 +339,4 @@ H5P.FreeTextQuestion = (function (EventDispatcher, $) {
   FreeTextQuestion.prototype.constructor = FreeTextQuestion;
 
   return FreeTextQuestion;
-})(H5P.EventDispatcher, H5P.jQuery);
+})(H5P.EventDispatcher, H5P.jQuery, H5P.CKEditor);

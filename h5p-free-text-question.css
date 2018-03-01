@@ -62,6 +62,8 @@
   box-sizing: border-box;
   font-family: inherit;
   font-size: inherit;
+  cursor: text;
+  border: 1px solid #d1d1d1;
 }
 
 .h5p-free-text-question-input-wrapper.h5p-questionnaire-required .h5p-subcontent-question {
