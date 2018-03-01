@@ -87,6 +87,8 @@ H5P.FreeTextQuestion = (function (EventDispatcher, $, CKEditor) {
       textarea.contenteditable = true;
 
       var content;
+      // Don't load CKEditor if in editor
+      // (will break the ckeditor provided by the H5P editor)
       if (!isEditing) {
         textarea.addEventListener('click', function () {
           ckEditor.create();
@@ -326,12 +328,6 @@ H5P.FreeTextQuestion = (function (EventDispatcher, $, CKEditor) {
       $container.get(0).classList.add('h5p-free-text-question-wrapper');
       $container.append(self.wrapper);
 
-      // Don't load CKEditor if in editor
-      // (will break the ckeditor provided by the H5P editor)
-      if (!isEditing) {
-        //ckEditor.create();
-      }
-
       attached = true;
     };
 
@@ -340,7 +336,6 @@ H5P.FreeTextQuestion = (function (EventDispatcher, $, CKEditor) {
 
     // Setup events
     ckEditor.on('blur', createXAPIEvent.bind(this, 'interacted', true));
-    //ckEditor.on('blur', ckEditor.destroy.bind(ckEditor));
     ckEditor.on('created', resize);
     self.on('resize', ckEditor.trigger.bind(ckEditor, 'resize'));
     self.on('resize', resize);
