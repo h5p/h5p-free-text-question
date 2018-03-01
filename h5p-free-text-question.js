@@ -344,7 +344,7 @@ H5P.FreeTextQuestion = (function (EventDispatcher, $, CKEditor) {
 
     /**
      * Returns the current state
-     * @returns {String}
+     * @returns {string} Current state
      */
     self.getCurrentState = function () {
       return ckEditor.getData();
