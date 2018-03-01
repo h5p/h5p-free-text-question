@@ -155,17 +155,17 @@ H5P.FreeTextQuestion = (function (EventDispatcher, $, CKEditor) {
 
       // Create a 'skip button' if we are allowed to
       if (params.isRequired == false) {
-        var skipButton = document.createElement('button');
-        skipButton.classList.add('h5p-free-text-question-button-skip');
-        skipButton.type = 'button';
-        skipButton.innerHTML = params.i10n.skipButtonLabel;
+        self.skipButton = document.createElement('button');
+        self.skipButton.classList.add('h5p-free-text-question-button-skip');
+        self.skipButton.type = 'button';
+        self.skipButton.innerHTML = params.i10n.skipButtonLabel;
 
-        skipButton.addEventListener('click', function () {
+        self.skipButton.addEventListener('click', function () {
           createXAPIEvent('interacted', true);
           self.trigger('continue');
         });
 
-        self.footer.appendChild(skipButton);
+        self.footer.appendChild(self.skipButton);
       }
 
       self.footer.appendChild(self.submitButton);
@@ -284,12 +284,19 @@ H5P.FreeTextQuestion = (function (EventDispatcher, $, CKEditor) {
         return;
       }
 
-      var footerWidth = $(self.$container).width();
-      var fontSize = parseInt($(self.$container).css('font-size'), 10);
-      var widthToEmRatio = footerWidth / fontSize;
-      var widthToEmThreshold = 23;
+      // Make it big, and then check if it has room for it
+      self.submitButton.innerHTML = params.i10n.submitButtonLabel;
 
-      self.submitButton.innerHTML = (widthToEmRatio <= widthToEmThreshold) ? '' : params.i10n.submitButtonLabel;
+      var $footer = $(self.footer);
+      var footerPadding = parseInt($footer.css("padding-right"));
+      // Magic number "4" is needed because of pixel rounding
+      var footerWidth = $footer.innerWidth() - (footerPadding * 2) - 4;
+      var skipWidth = $(self.skipButton).outerWidth();
+      var submitWidth = $(self.submitButton).outerWidth();
+
+      if (skipWidth + submitWidth > footerWidth) {
+        self.submitButton.innerHTML = '';
+      }
 
       // resize CkEditor
       resizeCKEditor();
