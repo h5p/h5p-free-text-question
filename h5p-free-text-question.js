@@ -31,7 +31,12 @@ H5P.FreeTextQuestion = (function (EventDispatcher, $, CKEditor) {
       }
     }, params);
 
-    var ckEditor = new CKEditor(textAreaID, params.i10n.language, extras.parent.$container);
+
+    var getPreviousAnswer = function () {
+      return (extras !== undefined && extras.previousState !== undefined) ? extras.previousState : '';
+    };
+
+    var ckEditor = new CKEditor(textAreaID, params.i10n.language, extras.parent.$container, getPreviousAnswer());
 
     /**
      * Create the open ended question element
@@ -91,8 +96,6 @@ H5P.FreeTextQuestion = (function (EventDispatcher, $, CKEditor) {
       // (will break the ckeditor provided by the H5P editor)
       if (!isEditing) {
         textarea.addEventListener('click', function () {
-          // Don't want to send placeholder into ckEditor
-          textarea.innerHTML = '';
           ckEditor.create();
         });
 
@@ -337,6 +340,14 @@ H5P.FreeTextQuestion = (function (EventDispatcher, $, CKEditor) {
       $container.append(self.wrapper);
 
       attached = true;
+    };
+
+    /**
+     * Returns the current state
+     * @returns {String}
+     */
+    self.getCurrentState = function () {
+      return ckEditor.getData();
     };
 
     // Create the HTML:
