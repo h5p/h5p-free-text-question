@@ -91,6 +91,8 @@ H5P.FreeTextQuestion = (function (EventDispatcher, $, CKEditor) {
       // (will break the ckeditor provided by the H5P editor)
       if (!isEditing) {
         textarea.addEventListener('click', function () {
+          // Don't want to send placeholder into ckEditor
+          textarea.innerHTML = '';
           ckEditor.create();
         });
 
