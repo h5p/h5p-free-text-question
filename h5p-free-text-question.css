@@ -170,3 +170,10 @@
   cursor: pointer;
   font-size: 0.8em;
 }
+.h5p-free-text-question-button-skip.truncated:after {
+  font-family: "H5PFontAwesome4";
+  content: "\f051";
+}
+.h5p-free-text-question-button-submit.truncated:after {
+  margin-left: 0;
+}

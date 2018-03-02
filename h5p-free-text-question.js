@@ -298,17 +298,33 @@ H5P.FreeTextQuestion = (function (EventDispatcher, $, CKEditor) {
       }
 
       // Make it big, and then check if it has room for it
+      self.submitButton.classList.remove('truncated');
       self.submitButton.innerHTML = params.i10n.submitButtonLabel;
+
+      if (self.skipButton) {
+        self.skipButton.classList.remove('truncated');
+        self.skipButton.innerHTML = params.i10n.skipButtonLabel;
+      }
 
       var $footer = $(self.footer);
       var footerPadding = parseInt($footer.css("padding-right"));
       // Magic number "4" is needed because of pixel rounding
       var footerWidth = $footer.innerWidth() - (footerPadding * 2) - 4;
-      var skipWidth = $(self.skipButton).outerWidth();
+      var skipWidth = self.skipButton ? $(self.skipButton).outerWidth() : 0;
       var submitWidth = $(self.submitButton).outerWidth();
 
+      // Remove text for submit button
       if (skipWidth + submitWidth > footerWidth) {
+        self.submitButton.classList.add('truncated');
         self.submitButton.innerHTML = '';
+      }
+
+      if (self.skipButton) {
+        submitWidth = $(self.submitButton).outerWidth();
+        if (skipWidth + submitWidth > footerWidth) {
+          self.skipButton.classList.add('truncated');
+          self.skipButton.innerHTML = '';
+        }
       }
 
       // resize CkEditor
