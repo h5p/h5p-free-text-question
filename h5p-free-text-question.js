@@ -17,6 +17,8 @@ H5P.FreeTextQuestion = (function (EventDispatcher, $, CKEditor) {
     counter++;
     var isEditing = (window.H5PEditor !== undefined);
     var attached;
+    var textarea;
+    var useCK = false;
     params = $.extend({
       question: 'Question or description',
       placeholder: 'Enter your response here',
@@ -86,10 +88,9 @@ H5P.FreeTextQuestion = (function (EventDispatcher, $, CKEditor) {
         'class': 'h5p-free-text-question-input-wrapper'
       });
 
-      var textarea = document.createElement('div');
+      textarea = document.createElement('div');
       textarea.classList.add('h5p-free-text-question-input');
       textarea.id = textAreaID;
-      textarea.contenteditable = true;
 
       var content;
       // Don't load CKEditor if in editor
@@ -97,13 +98,24 @@ H5P.FreeTextQuestion = (function (EventDispatcher, $, CKEditor) {
       if (!isEditing) {
         textarea.addEventListener('click', function () {
           createXAPIEvent('interacted', true);
-          ckEditor.create();
+
+          useCK = (textarea.offsetHeight > 135);
+
+          // Don't use CK if it is no room for it
+          if (useCK) {
+            ckEditor.create();
+          }
+          else {
+            textarea.contentEditable = true;
+            textarea.focus();
+          }
         });
 
-        content = ckEditor.getData();
+        content = getResponse();
       }
 
-      textarea.innerHTML = content ? content : params.placeholder;
+      textarea.innerHTML = content ? content : getPreviousAnswer();
+      textarea.setAttribute('placeholder', params.placeholder);
 
       self.$inputWrapper.append(textarea);
 
@@ -140,6 +152,14 @@ H5P.FreeTextQuestion = (function (EventDispatcher, $, CKEditor) {
       return self.requiredMessageWrapper;
     };
 
+    var getResponse = function () {
+      if (useCK) {
+        return ckEditor.getData();
+      }
+
+      return textarea.innerHTML;
+    };
+
     /**
      * Create the footer and associated buttons
      * @returns {HTMLElement} Footer
@@ -155,7 +175,7 @@ H5P.FreeTextQuestion = (function (EventDispatcher, $, CKEditor) {
 
       if (!isEditing) {
         self.submitButton.addEventListener('click', function () {
-          if (params.isRequired && ckEditor.getData().length === 0) {
+          if (params.isRequired && getResponse().length === 0) {
             showRequiredMessage();
           }
           else {
@@ -217,7 +237,7 @@ H5P.FreeTextQuestion = (function (EventDispatcher, $, CKEditor) {
 
         // Add the response to the xAPI statement
         // Return a stored user response if it exists
-        xAPIEvent.data.statement.result.response = ckEditor.getData();
+        xAPIEvent.data.statement.result.response = getResponse();
       }
 
       if (trigger) {
@@ -363,7 +383,7 @@ H5P.FreeTextQuestion = (function (EventDispatcher, $, CKEditor) {
      * @returns {string} Current state
      */
     self.getCurrentState = function () {
-      return ckEditor.getData();
+      return getResponse();
     };
 
     // Create the HTML:

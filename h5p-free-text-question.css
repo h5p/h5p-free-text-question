@@ -64,6 +64,13 @@
   font-size: inherit;
   cursor: text;
   border: 1px solid #d1d1d1;
+  overflow-y: auto;
+}
+
+.h5p-free-text-question-input:empty:before {
+  content: attr(placeholder);
+  display: block; /* For Firefox */
+  color: #888;
 }
 
 .h5p-free-text-question-input p {
