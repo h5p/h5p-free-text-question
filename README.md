@@ -2,6 +2,8 @@
 
 Creates a free text question where students can use a wysiwyg editor for creating their answer.
 
+Note: It is not possible to use this from the development folder. Instead, it has to be copied into ```drupal/sites/default/files/h5p/libraries``` as ```H5P.CKEDITOR-1.0```. 
+
 ## License
 
 (The MIT License)
