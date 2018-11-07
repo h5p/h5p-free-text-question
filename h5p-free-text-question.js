@@ -221,7 +221,7 @@ H5P.FreeTextQuestion = (function (EventDispatcher, $, CKEditor) {
      * @param  {boolean} trigger Whether the event should be triggered
      * @return {Object}         xAPI event object
      */
-    var createXAPIEvent= function(type, trigger) {
+    var createXAPIEvent= function (type, trigger) {
       var xAPIEvent = self.createXAPIEventTemplate(type);
 
       // Add question to the definition of the xAPI statement
@@ -312,7 +312,7 @@ H5P.FreeTextQuestion = (function (EventDispatcher, $, CKEditor) {
      * Listen to resize events in order to use smaller buttons
      * @returns {undefined}
      */
-    var resize = function() {
+    var resize = function () {
       if (!attached) {
         return;
       }
@@ -355,7 +355,7 @@ H5P.FreeTextQuestion = (function (EventDispatcher, $, CKEditor) {
      * Resize the CK Editor
      * @returns {undefined}
      */
-    var resizeCKEditor = function() {
+    var resizeCKEditor = function () {
       // Do nothing if I am not visible
       if (self.$container.is(':visible')) {
         ckEditor.resize(undefined, self.$inputWrapper.height()-4);
