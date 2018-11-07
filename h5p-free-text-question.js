@@ -90,6 +90,10 @@ H5P.FreeTextQuestion = (function (EventDispatcher, $, CKEditor) {
 
       textarea = document.createElement('div');
       textarea.classList.add('h5p-free-text-question-input');
+      textarea.setAttribute('tabindex', 0);
+      textarea.addEventListener('focus', function (event) {
+        event.target.click();
+      });
       textarea.id = textAreaID;
 
       var content;
