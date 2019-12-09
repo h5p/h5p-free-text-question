@@ -33,6 +33,8 @@ H5P.FreeTextQuestion = (function (EventDispatcher, $, CKEditor) {
       }
     }, params);
 
+    self.isTask = true;
+
 
     var getPreviousAnswer = function () {
       return (extras !== undefined && extras.previousState !== undefined) ? extras.previousState : '';
