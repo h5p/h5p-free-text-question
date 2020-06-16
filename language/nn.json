@@ -5,7 +5,7 @@
     },
     {
       "label": "Placeholder text",
-      "default": "Enter your response here",
+      "default": "Skriv svaret ditt her",
       "description": "Text that initially will be shown in the input field. Will be removed automatically when the user starts writing."
     },
     {
@@ -22,20 +22,20 @@
         {
           "label": "Required text label",
           "description": "Text shown to notify learner that input is required before proceeding",
-          "default": "required"
+          "default": "Påkravd"
         },
         {
           "label": "Required message",
-          "default": "This question requires an answer",
+          "default": "Dette spørsmålet krev eit svar",
           "description": "Will display if this field is unanswered and required by a wrapper content type"
         },
         {
           "label": "Skip button label",
-          "default": "Skip Question"
+          "default": "Hopp over spørsmål"
         },
         {
           "label": "Proceed button label",
-          "default": "Answer and proceed"
+          "default": "Svar og hald fram"
         },
         {
           "label": "Wysiwyg editor language",
