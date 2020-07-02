@@ -6,7 +6,7 @@
     {
       "label": "Placeholder tekst",
       "default": "Voer je reactie hier in",
-      "description": "Text that initially will be shown in the input field. Will be removed automatically when the user starts writing."
+      "description": "Tekst die bij aanvang wordt getoond in het invoerveld. Wordt automatisch verwijderd wanneer gebruiker begint met schrijven."
     },
     {
       "label": "Max score",
