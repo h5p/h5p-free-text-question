@@ -17,7 +17,7 @@
       "description": "Los estudiantes deben proporcionar una respuesta para poder avanzar"
     },
     {
-      "label": "Botones de Pregunta Localizar Texto Libre",
+      "label": "Botones para localizar Pregunta de Texto Libre",
       "fields": [
         {
           "label": "Etiqueta Texto requerido",
@@ -27,7 +27,7 @@
         {
           "label": "Mensaje Requerido",
           "default": "Esta pregunta requiere una respuesta",
-          "description": "Se mostrará si este campo no está contestado y es requerido por un tipo de contenido envoltorio (wrapper)"
+          "description": "Se mostrará si este campo no está contestado y es requerido por un tipo de contenido envoltorio"
         },
         {
           "label": "Etiqueta botón Saltar",
@@ -39,16 +39,16 @@
         },
         {
           "label": "Idioma editor Wysiwyg",
-          "description": "El idioma de la interfase del usuario wysiwyg",
+          "description": "El idioma de la interfaz wysiwyg del usuario",
           "options": [
             {
-              "label": "Afrikaans"
+              "label": "Afrikáans"
             },
             {
               "label": "Árabe"
             },
             {
-              "label": "Azerbaijani"
+              "label": "Azerbaiyano"
             },
             {
               "label": "Búlgaro"
@@ -108,7 +108,7 @@
               "label": "Vasco"
             },
             {
-              "label": "Farsi"
+              "label": "Persa"
             },
             {
               "label": "Finlandés"
@@ -183,7 +183,7 @@
               "label": "Bokmål Noruego"
             },
             {
-              "label": "Holandés (Estándard)"
+              "label": "Holandés (Estándar)"
             },
             {
               "label": "Noruego"
@@ -207,7 +207,8 @@
               "label": "Ruso"
             },
             {
-              "label": "Sinhala/Singalés"            },
+              "label": "Sinhala/Singalés"
+            },
             {
               "label": "Eslovaco"
             },
@@ -218,7 +219,7 @@
               "label": "Albanés"
             },
             {
-              "label": "Serbio (Latin)"
+              "label": "Serbio (Latino)"
             },
             {
               "label": "Serbio"
@@ -233,16 +234,16 @@
               "label": "Turco"
             },
             {
-              "label": "Tatar"
+              "label": "Tártaro"
             },
             {
-              "label": "Uighur/Uyghur"
+              "label": "Uigur/Uyghur"
             },
             {
               "label": "Ucrainiano"
             },
             {
-              "label": "Vietnames"
+              "label": "Vietnamés"
             },
             {
               "label": "Chino (PRC)"
