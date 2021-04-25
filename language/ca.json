@@ -10,7 +10,7 @@
     },
     {
       "label": "Puntuació màxima",
-      "description": "S’utilitza per a la puntuació i no es mostra a l’alumne."
+      "description": "S’utilitza per a la puntuació i no es mostra a l’alumne"
     },
     {
       "label": "Requerit",
@@ -180,7 +180,7 @@
               "label": "Malai"
             },
             {
-              "label": "Norwegian Bokmål"
+              "label": "Noruec bokmål"
             },
             {
               "label": "Neerlandès (estàndard)"
