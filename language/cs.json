@@ -14,7 +14,7 @@
     },
     {
       "label": "Povinné",
-      "description": "Aby mohli studenti pokračovat, musí odpovědět "
+      "description": "Aby mohli studenti pokračovat, musí odpovědět"
     },
     {
       "label": "Lokalizujte tlačítka otázek s volným textem",
@@ -27,7 +27,7 @@
         {
           "label": "Požadovaná zpráva",
           "default": "Tato otázka vyžaduje odpověď",
-          "description": "Zobrazí se, pokud není toto pole zodpovězeno a vyžaduje nadřazený typ "
+          "description": "Zobrazí se, pokud není toto pole zodpovězeno a vyžaduje nadřazený typ"
         },
         {
           "label": "Popisek tlačítka Přeskočit",
