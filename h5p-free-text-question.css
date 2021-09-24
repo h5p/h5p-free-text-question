@@ -33,6 +33,10 @@
   color: #ffffff;
 }
 
+.h5p-free-text-question-text:focus{
+  outline: none!important;
+}
+
 .h5p-free-text-question-text-wrapper:before {
   width: 0.75em;
   height: 0.75em;

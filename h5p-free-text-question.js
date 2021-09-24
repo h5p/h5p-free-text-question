@@ -67,6 +67,8 @@ H5P.FreeTextQuestion = (function (EventDispatcher, $, CKEditor) {
 
       var text = document.createElement('div');
       text.classList.add('h5p-free-text-question-text');
+      text.setAttribute('tabindex', 0);
+      text.setAttribute('aria-label', params.question);
       text.innerHTML = params.question;
 
       if (params.isRequired == true) {
