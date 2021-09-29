@@ -4,9 +4,9 @@
       "label": "Fråga"
     },
     {
-      "label": "Platshållartext",
+      "label": "Text för platshållare",
       "default": "Skriv in ditt svar här",
-      "description": "Text som initialt kommer visas i inmatningsfältet. Försvinner automatiskt när användaren börjar skriva."
+      "description": "Text som visas i fältet innan användaren börjar skriva. Texten försvinner automatiskt när användaren börjar skriva."
     },
     {
       "label": "Max poäng",
