@@ -27,7 +27,7 @@
         {
           "label": "Beharrezkoa mezua",
           "default": "Galdera honek erantzun bat eskatzen du",
-          "description": "Erakutsiko da baldin eta eremuak erantzunik jasotzen ez badu eta edukiaren paketatzerako beharrezkoa bada"
+          "description": "Erakutsiko da baldin eta eremuak erantzunik jasotzen ez badu eta eduki motaren paketatzerako beharrezkoa bada"
         },
         {
           "label": "Saltatu botoiaren etiketa",
