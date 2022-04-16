@@ -30,15 +30,15 @@
           "description": "Bu alan gerekliyse ve cevap verilmediyse görüntülenir"
         },
         {
-          "label": "Atlama butonu etiketi",
+          "label": "Atla butonu etiketi",
           "default": "Soruyu atla"
         },
         {
-          "label": "İlerle butonu etiketi",
+          "label": "İlerleme butonu etiketi",
           "default": "Cevapla ve devam et"
         },
         {
-          "label": "Metin Editörü Dili",
+          "label": "Metin düzenleyici dili",
           "description": "Meti editörü kullanıcı arayüzünün dili",
           "options": [
             {
