@@ -98,6 +98,10 @@ H5P.FreeTextQuestion = (function (EventDispatcher, $, CKEditor) {
       textarea.addEventListener('focus', function (event) {
         event.target.click();
       });
+      textarea.addEventListener('keydown', function (event) {
+        // Avoid playing/pausing IV using shortcuts
+        event.stopPropagation();
+      });
       textarea.id = textAreaID;
 
       var content;
