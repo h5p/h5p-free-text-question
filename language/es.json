@@ -4,30 +4,30 @@
       "label": "Pregunta"
     },
     {
-      "label": "Texto remplazable",
-      "default": "Escriba aquí su respuesta",
-      "description": "Texto que inicialmente será mostrado en el campo para entrada. Será removido automáticamente cuando el usuario comience a escribir."
+      "label": "Texto por defecto",
+      "default": "Escribe aquí tu respuesta",
+      "description": "Texto mostrado inicialmente en el campo de entrada. Se eliminará automáticamente cuando el usuario empiece a escribir."
     },
     {
-      "label": "Puntaje máx",
-      "description": "Usado para calificar y no mostrado al estudiante"
+      "label": "Puntuación máx",
+      "description": "Usado para calificar y no mostrado al alumno"
     },
     {
-      "label": "Requerido",
-      "description": "Los estudiantes deben proporcionar una respuesta para poder avanzar"
+      "label": "Obligatorio",
+      "description": "Los alumnos deben proporcionar una respuesta para poder avanzar"
     },
     {
-      "label": "Botones para localizar Pregunta de Texto Libre",
+      "label": "Botones para localizar Preguntas de Texto Libre",
       "fields": [
         {
-          "label": "Etiqueta Texto requerido",
-          "description": "Texto mostrado para notificar al estudiante que se requiere una respuesta antes de poder avanzar",
-          "default": "requerido"
+          "label": "Etiqueta Texto Obligatorio",
+          "description": "Texto mostrado para notificar al alumno que se requiere una respuesta antes de poder avanzar",
+          "default": "obligatorio"
         },
         {
-          "label": "Mensaje Requerido",
+          "label": "Mensaje Obligatorio",
           "default": "Esta pregunta requiere una respuesta",
-          "description": "Se mostrará si este campo no está contestado y es requerido por un tipo de contenido envoltorio"
+          "description": "Se mostrará si este campo no ha sido contestado y es requerido por un tipo de contenido wrapper"
         },
         {
           "label": "Etiqueta botón Saltar",
@@ -114,7 +114,7 @@
               "label": "Finlandés"
             },
             {
-              "label": "Faeroe"
+              "label": "Feroés"
             },
             {
               "label": "Francés (Canadá)"
@@ -123,7 +123,7 @@
               "label": "Francés (Estándar)"
             },
             {
-              "label": "Galés"
+              "label": "Gallego"
             },
             {
               "label": "Gujarati"
@@ -219,7 +219,7 @@
               "label": "Albanés"
             },
             {
-              "label": "Serbio (Latin)"
+              "label": "Serbio (Latino)"
             },
             {
               "label": "Serbio"
@@ -243,7 +243,7 @@
               "label": "Ucraniano"
             },
             {
-              "label": "Vietnamés"
+              "label": "Vietnamita"
             },
             {
               "label": "Chino (PRC)"
