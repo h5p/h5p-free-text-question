@@ -5,44 +5,42 @@
     },
     {
       "label": "Texto por defecto",
-      "default": "Escribe aquí tu respuesta",
-      "description": "Texto mostrado inicialmente en el campo de entrada. Se eliminará automáticamente cuando el usuario empiece a escribir."
+      "description": "Texto amosado inicialmente no campo de entrada. Borrarase automaticamente cando o usuario empece a escribir.",
+      "default": "Introduza aquí a súa resposta"
     },
     {
-      "label": "Puntuación máx",
-      "description": "Usado para calificar y no mostrado al alumno"
+      "description": "Úsase para cualificar e non se amosa ao alumno",
+      "label": "Puntuación máxima"
     },
     {
-      "label": "Obligatorio",
-      "description": "Los alumnos deben proporcionar una respuesta para poder avanzar"
+      "description": "Os alumnos deben dar unha resposta para continuar",
+      "label": "Requirido"
     },
     {
-      "label": "Botones para localizar Preguntas de Texto Libre",
       "fields": [
         {
-          "label": "Etiqueta Texto Obligatorio",
-          "description": "Texto mostrado para notificar al alumno que se requiere una respuesta antes de poder avanzar",
-          "default": "obligatorio"
+          "label": "Etiqueta de texto obrigatoria",
+          "default": "requirido",
+          "description": "Texto amosado para notificar ao alumno que é necesario introducir información antes de continuar"
         },
         {
-          "label": "Mensaje Obligatorio",
-          "default": "Esta pregunta requiere una respuesta",
-          "description": "Se mostrará si este campo no ha sido contestado y es requerido por un tipo de contenido wrapper"
+          "default": "Esta pregunta require unha resposta",
+          "label": "Mensaxe obrigatoria",
+          "description": "Amosarase se este campo non ten resposta e é requirido por un tipo de contido wrapper"
         },
         {
-          "label": "Etiqueta botón Saltar",
-          "default": "Saltar Pregunta"
+          "label": "Omitir a etiqueta do botón",
+          "default": "Saltar pregunta"
         },
         {
-          "label": "Etiqueta botón Avanzar",
-          "default": "Contestar y Avanzar"
+          "label": "Etiqueta do botón Continuar",
+          "default": "Responde e continúa"
         },
         {
-          "label": "Idioma editor Wysiwyg",
-          "description": "El idioma de la interfaz wysiwyg del usuario",
+          "label": "Idioma do editor Wysiwyg",
           "options": [
             {
-              "label": "Afrikáans"
+              "label": "Afrikaans"
             },
             {
               "label": "Árabe"
@@ -57,7 +55,7 @@
               "label": "Bengalí"
             },
             {
-              "label": "Bosnio"
+              "label": "Bosníaco"
             },
             {
               "label": "Catalán"
@@ -72,13 +70,13 @@
               "label": "Danés"
             },
             {
-              "label": "Alemán (Suiza)"
+              "label": "Alemán (Suíza)"
             },
             {
               "label": "Alemán"
             },
             {
-              "label": "Griego"
+              "label": "Grego"
             },
             {
               "label": "Inglés (Australia)"
@@ -108,31 +106,31 @@
               "label": "Vasco"
             },
             {
-              "label": "Persa"
+              "label": "Farsi"
             },
             {
-              "label": "Finlandés"
+              "label": "Finés"
             },
             {
-              "label": "Feroés"
+              "label": "Faroes"
             },
             {
               "label": "Francés (Canadá)"
             },
             {
-              "label": "Francés (Estándar)"
+              "label": "Francés (estándar)"
             },
             {
-              "label": "Gallego"
+              "label": "Galego"
             },
             {
-              "label": "Gujarati"
+              "label": "Gujaratí"
             },
             {
               "label": "Hebreo (moderno)"
             },
             {
-              "label": "Hindú"
+              "label": "Hindi"
             },
             {
               "label": "Croata"
@@ -147,16 +145,16 @@
               "label": "Islandés"
             },
             {
-              "label": "Italiano (Estándar)"
+              "label": "Italiano (estándar)"
             },
             {
-              "label": "Japonés"
+              "label": "Xaponés"
             },
             {
-              "label": "Georgiano"
+              "label": "Xeorgiano"
             },
             {
-              "label": "Khmer Central"
+              "label": "Khmer central"
             },
             {
               "label": "Coreano"
@@ -177,13 +175,13 @@
               "label": "Mongol"
             },
             {
-              "label": "Malayo"
+              "label": "Malaio"
             },
             {
-              "label": "Bokmål Noruego"
+              "label": "Noruegués bokmål"
             },
             {
-              "label": "Holandés (Estándard)"
+              "label": "Holandés (estándar)"
             },
             {
               "label": "Noruego"
@@ -201,25 +199,25 @@
               "label": "Portugués (Portugal)"
             },
             {
-              "label": "Rumano"
+              "label": "Romanés"
             },
             {
               "label": "Ruso"
             },
             {
-              "label": "Sinhala/Singalés"
+              "label": "Cingalés/Cingalés"
             },
             {
               "label": "Eslovaco"
             },
             {
-              "label": "Eslovenio"
+              "label": "Esloveno"
             },
             {
               "label": "Albanés"
             },
             {
-              "label": "Serbio (Latino)"
+              "label": "Serbio (latín)"
             },
             {
               "label": "Serbio"
@@ -237,20 +235,22 @@
               "label": "Tártaro"
             },
             {
-              "label": "Uigur/Uyghur"
+              "label": "Uigur/Uigur"
             },
             {
-              "label": "Ucraniano"
+              "label": "Ukraniano"
             },
             {
               "label": "Vietnamita"
             },
             {
-              "label": "Chino (PRC)"
+              "label": "Chinés (RPC)"
             }
-          ]
+          ],
+          "description": "O idioma da interface de usuario wysiwyg"
         }
-      ]
+      ],
+      "label": "Localizar botóns de Preguntas de Texto Libre"
     }
   ]
 }
