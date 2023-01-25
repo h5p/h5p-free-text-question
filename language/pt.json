@@ -1,252 +1,252 @@
 {
   "semantics": [
     {
-      "label": "Question"
+      "label": "Questão"
     },
     {
-      "label": "Placeholder text",
-      "default": "Enter your response here",
-      "description": "Text that initially will be shown in the input field. Will be removed automatically when the user starts writing."
+      "label": "Texto marcador de posição",
+      "default": "Digite aqui sua resposta",
+      "description": "Texto que será inicialmente mostrado no campo de entrada. Será removido automaticamente quando o utilizador começar a escrever."
     },
     {
-      "label": "Max score",
-      "description": "Used for grading and not shown to the learner"
+      "label": "Pontuação máxima",
+      "description": "Usado para avaliação e não mostrado ao aluno"
     },
     {
-      "label": "Required",
-      "description": "Learners must provide an answer in order to proceed"
+      "label": "Obrigatório",
+      "description": "Os alunos devem fornecer uma resposta para prosseguir"
     },
     {
-      "label": "Localize Free Text Question buttons",
+      "label": "Botões de localização de questões de texto livre",
       "fields": [
         {
-          "label": "Required text label",
-          "description": "Text shown to notify learner that input is required before proceeding",
-          "default": "required"
+          "label": "Etiqueta de texto obrigatório",
+          "description": "Texto mostrado para notificar o aluno de que a entrada é necessária antes de continuar",
+          "default": "obrigatório"
         },
         {
-          "label": "Required message",
-          "default": "This question requires an answer",
-          "description": "Will display if this field is unanswered and required by a wrapper content type"
+          "label": "Mensagem obrigatória",
+          "default": "Esta questão requer uma resposta",
+          "description": "Será exibido se este campo ficar sem resposta e for exigido por um tipo de conteúdo wrapper"
         },
         {
-          "label": "Skip button label",
-          "default": "Skip Question"
+          "label": "Pular etiqueta do botão",
+          "default": "Pular questão"
         },
         {
-          "label": "Proceed button label",
-          "default": "Answer and proceed"
+          "label": "Etiqueta do botão continuar",
+          "default": "Responder e continuar"
         },
         {
-          "label": "Wysiwyg editor language",
-          "description": "The language of the wysiwyg user interface",
+          "label": "Língua do editor wysiwyg",
+          "description": "A língua da interface do utilizador wysiwyg",
           "options": [
             {
               "label": "Afrikaans"
             },
             {
-              "label": "Arabic"
+              "label": "Árabe"
             },
             {
               "label": "Azerbaijani"
             },
             {
-              "label": "Bulgarian"
+              "label": "Búlgaro"
             },
             {
-              "label": "Bengali"
+              "label": "Bengalês"
             },
             {
-              "label": "Bosnian"
+              "label": "Bósnio"
             },
             {
-              "label": "Catalan"
+              "label": "Catalão"
             },
             {
-              "label": "Czech"
+              "label": "Checo"
             },
             {
-              "label": "Welsh"
+              "label": "Galês"
             },
             {
-              "label": "Danish"
+              "label": "Dinamarquês"
             },
             {
-              "label": "German (Switzerland)"
+              "label": "Alemão (Suíça)"
             },
             {
-              "label": "German"
+              "label": "Alemão"
             },
             {
-              "label": "Greek"
+              "label": "Grego"
             },
             {
-              "label": "English (Australia)"
+              "label": "Inglês (Austrália)"
             },
             {
-              "label": "English (Canada)"
+              "label": "Inglês (Canadá)"
             },
             {
-              "label": "English (United Kingdom)"
+              "label": "Inglês (Reino Unido)"
             },
             {
-              "label": "English"
+              "label": "Inglês"
             },
             {
               "label": "Esperanto"
             },
             {
-              "label": "Spanish (Mexico)"
+              "label": "Espanhol (México)"
             },
             {
-              "label": "Spanish (Spain)"
+              "label": "Espanhol (Espanha)"
             },
             {
-              "label": "Estonian"
+              "label": "Estónio"
             },
             {
-              "label": "Basque"
+              "label": "Basco"
             },
             {
               "label": "Farsi"
             },
             {
-              "label": "Finnish"
+              "label": "Finlandês"
             },
             {
-              "label": "Faeroese"
+              "label": "Feroês"
             },
             {
-              "label": "French (Canada)"
+              "label": "Francês (Canadá)"
             },
             {
-              "label": "French (Standard)"
+              "label": "Francês (Padrão)"
             },
             {
-              "label": "Galician"
+              "label": "Galego"
             },
             {
               "label": "Gujarati"
             },
             {
-              "label": "Hebrew (modern)"
+              "label": "Hebraico (moderno)"
             },
             {
               "label": "Hindi"
             },
             {
-              "label": "Croatian"
+              "label": "Croata"
             },
             {
-              "label": "Hungarian"
+              "label": "Húngaro"
             },
             {
-              "label": "Indonesian"
+              "label": "Indonésio"
             },
             {
-              "label": "Icelandic"
+              "label": "Islandês"
             },
             {
-              "label": "Italian (Standard)"
+              "label": "Italiano (Padrão)"
             },
             {
-              "label": "Japanese"
+              "label": "Japonês"
             },
             {
-              "label": "Georgian"
+              "label": "Georgiano"
             },
             {
-              "label": "Central Khmer"
+              "label": "Khmer Central"
             },
             {
-              "label": "Korean"
+              "label": "Coreano"
             },
             {
-              "label": "Kurdish"
+              "label": "Curdo"
             },
             {
-              "label": "Lithuanian"
+              "label": "Lituano"
             },
             {
-              "label": "Latvian"
+              "label": "Letão"
             },
             {
-              "label": "Macedonian"
+              "label": "Macedônio"
             },
             {
-              "label": "Mongolian"
+              "label": "Mongol"
             },
             {
-              "label": "Malay"
+              "label": "Malaio"
             },
             {
-              "label": "Norwegian Bokmål"
+              "label": "Bokmål Norueguês"
             },
             {
-              "label": "Dutch (Standard)"
+              "label": "Holandês (Padrão)"
             },
             {
-              "label": "Norwegian"
+              "label": "Norueguês"
             },
             {
-              "label": "Occitan"
+              "label": "Occitânica"
             },
             {
-              "label": "Polish"
+              "label": "Polonês"
             },
             {
-              "label": "Portuguese (Brazil)"
+              "label": "Português (Brasil)"
             },
             {
-              "label": "Portuguese (Portugal)"
+              "label": "Português (Portugal)"
             },
             {
-              "label": "Romanian"
+              "label": "Romeno"
             },
             {
-              "label": "Russian"
+              "label": "Russo"
             },
             {
-              "label": "Sinhala/Sinhalese"
+              "label": "Sinhala/Sinhalês"
             },
             {
-              "label": "Slovak"
+              "label": "Eslovaco"
             },
             {
-              "label": "Slovenian"
+              "label": "Esloveno"
             },
             {
-              "label": "Albanian"
+              "label": "Albanês"
             },
             {
-              "label": "Serbian (Latin)"
+              "label": "Sérvio (Latim)"
             },
             {
-              "label": "Serbian"
+              "label": "Sérvio"
             },
             {
-              "label": "Swedish"
+              "label": "Sueco"
             },
             {
-              "label": "Thai"
+              "label": "Tailandês"
             },
             {
-              "label": "Turkish"
+              "label": "Turco"
             },
             {
-              "label": "Tatar"
+              "label": "Tártaro"
             },
             {
               "label": "Uighur/Uyghur"
             },
             {
-              "label": "Ukrainian"
+              "label": "Ucraniano"
             },
             {
-              "label": "Vietnamese"
+              "label": "Vietnamita"
             },
             {
-              "label": "Chinese (PRC)"
+              "label": "Chinês (PRC)"
             }
           ]
         }
