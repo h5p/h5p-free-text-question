@@ -49,6 +49,7 @@ H5P.FreeTextQuestion = (function (EventDispatcher, $, CKEditor) {
     var createOpenEndedQuestion = function () {
       self.wrapper = document.createElement('div');
       self.wrapper.classList.add('h5p-free-text-question');
+      self.wrapper.classList.add('h5p-theme');
 
       self.wrapper.appendChild(createTextWrapper());
       self.wrapper.appendChild(createInputWrapper());
@@ -180,13 +181,10 @@ H5P.FreeTextQuestion = (function (EventDispatcher, $, CKEditor) {
       self.footer = document.createElement('div');
       self.footer.classList.add('h5p-free-text-question-footer');
 
-      self.submitButton = document.createElement('button');
-      self.submitButton.classList.add('h5p-free-text-question-button-submit');
-      self.submitButton.type = 'button';
-      self.submitButton.innerHTML = params.i10n.submitButtonLabel;
-
-      if (!isEditing) {
-        self.submitButton.addEventListener('click', function () {
+      self.submitButton = H5P.Components.Button({
+        label: params.i10n.submitButtonLabel,
+        classes: 'h5p-free-text-question-button-submit',
+        onClick: isEditing ? null : () => {
           if (params.isRequired && getResponse().length === 0) {
             showRequiredMessage();
           }
@@ -194,21 +192,17 @@ H5P.FreeTextQuestion = (function (EventDispatcher, $, CKEditor) {
             createXAPIEvent('answered', true);
             self.trigger('continue');
           }
-        });
-      }
+        }
+      });
 
       // Create a 'skip button' if we are allowed to
       if (params.isRequired == false) {
-        self.skipButton = document.createElement('button');
-        self.skipButton.classList.add('h5p-free-text-question-button-skip');
-        self.skipButton.type = 'button';
-        self.skipButton.innerHTML = params.i10n.skipButtonLabel;
-
-        if (!isEditing) {
-          self.skipButton.addEventListener('click', function () {
-            self.trigger('continue');
-          });
-        }
+        self.skipButton = H5P.Components.Button({
+          label: params.i10n.skipButtonLabel,
+          styleType: 'secondary',
+          classes: 'h5p-free-text-question-button-skip',
+          onClick: isEditing ? null : () => self.trigger('continue')
+        });
 
         self.footer.appendChild(self.skipButton);
       }
