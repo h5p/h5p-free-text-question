@@ -1,0 +1,256 @@
+{
+  "semantics": [
+    {
+      "label": "Întrebare"
+    },
+    {
+      "label": "Text substituent",
+      "default": "Introduceți răspunsul aici",
+      "description": "Textul care va fi afișat inițial în câmpul de introducere. Va fi eliminat automat când utilizatorul începe să scrie."
+    },
+    {
+      "label": "Punctaj maxim",
+      "description": "Folosit pentru notare și nu este afișat cursantului"
+    },
+    {
+      "label": "Obligatoriu",
+      "description": "Cursanții trebuie să ofere un răspuns pentru a putea continua"
+    },
+    {
+      "label": "Localizare butoane Întrebare cu text liber",
+      "fields": [
+        {
+          "label": "Etichetă text obligatoriu",
+          "description": "Text afișat pentru a notifica cursantul că este necesară introducerea unui răspuns înainte de a continua",
+          "default": "obligatoriu"
+        },
+        {
+          "label": "Mesaj obligatoriu",
+          "default": "Această întrebare necesită un răspuns",
+          "description": "Se va afișa dacă acest câmp nu este completat și este obligatoriu pentru un tip de conținut container."
+        },
+        {
+          "label": "Etichetă buton Sari peste",
+          "default": "Sari peste întrebare"
+        },
+        {
+          "label": "Etichetă buton Continuă",
+          "default": "Răspunde și continuă"
+        },
+        {
+          "label": "Limbă editor WYSIWYG",
+          "description": "Limba interfeței de utilizator a editorului WYSIWYG",
+          "options": [
+            {
+              "label": "Afrikaans"
+            },
+            {
+              "label": "Arabă"
+            },
+            {
+              "label": "Azeră"
+            },
+            {
+              "label": "Bulgară"
+            },
+            {
+              "label": "Bengali"
+            },
+            {
+              "label": "Bosniacă"
+            },
+            {
+              "label": "Catalană"
+            },
+            {
+              "label": "Cehă"
+            },
+            {
+              "label": "Galeză"
+            },
+            {
+              "label": "Daneză"
+            },
+            {
+              "label": "Germană (Elveția)"
+            },
+            {
+              "label": "Germană"
+            },
+            {
+              "label": "Greacă"
+            },
+            {
+              "label": "Engleză (Australia)"
+            },
+            {
+              "label": "Engleză (Canada)"
+            },
+            {
+              "label": "Engleză (Regatul Unit)"
+            },
+            {
+              "label": "Engleză"
+            },
+            {
+              "label": "Esperanto"
+            },
+            {
+              "label": "Spaniolă (Mexic)"
+            },
+            {
+              "label": "Spaniolă (Spania)"
+            },
+            {
+              "label": "Estonă"
+            },
+            {
+              "label": "Bască"
+            },
+            {
+              "label": "Persană (Farsi)"
+            },
+            {
+              "label": "Finlandeză"
+            },
+            {
+              "label": "Feroeză"
+            },
+            {
+              "label": "Franceză (Canada)"
+            },
+            {
+              "label": "Franceză (Standard)"
+            },
+            {
+              "label": "Galiciană"
+            },
+            {
+              "label": "Gujarati"
+            },
+            {
+              "label": "Ebraică (modernă)"
+            },
+            {
+              "label": "Hindi"
+            },
+            {
+              "label": "Croată"
+            },
+            {
+              "label": "Maghiară"
+            },
+            {
+              "label": "Indoneziană"
+            },
+            {
+              "label": "Islandeză"
+            },
+            {
+              "label": "Italiană (Standard)"
+            },
+            {
+              "label": "Japoneză"
+            },
+            {
+              "label": "Georgiană"
+            },
+            {
+              "label": "Khmeră Centrală"
+            },
+            {
+              "label": "Coreeană"
+            },
+            {
+              "label": "Kurdă"
+            },
+            {
+              "label": "Lituaniană"
+            },
+            {
+              "label": "Letonă"
+            },
+            {
+              "label": "Macedoneană"
+            },
+            {
+              "label": "Mongolă"
+            },
+            {
+              "label": "Malaeză"
+            },
+            {
+              "label": "Norvegiană Bokmål"
+            },
+            {
+              "label": "Olandeză (Standard)"
+            },
+            {
+              "label": "Norvegiană"
+            },
+            {
+              "label": "Occitană"
+            },
+            {
+              "label": "Poloneză"
+            },
+            {
+              "label": "Portugheză (Brazilia)"
+            },
+            {
+              "label": "Portugheză (Portugalia)"
+            },
+            {
+              "label": "Română"
+            },
+            {
+              "label": "Rusă"
+            },
+            {
+              "label": "Sinhala/Singaleză"
+            },
+            {
+              "label": "Slovacă"
+            },
+            {
+              "label": "Slovenă"
+            },
+            {
+              "label": "Albaneză"
+            },
+            {
+              "label": "Sârbă (latină)"
+            },
+            {
+              "label": "Sârbă"
+            },
+            {
+              "label": "Suedeză"
+            },
+            {
+              "label": "Thailandeză"
+            },
+            {
+              "label": "Turcă"
+            },
+            {
+              "label": "Tătară"
+            },
+            {
+              "label": "Uigură"
+            },
+            {
+              "label": "Ucraineană"
+            },
+            {
+              "label": "Vietnameză"
+            },
+            {
+              "label": "Chineză (RPC)"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
